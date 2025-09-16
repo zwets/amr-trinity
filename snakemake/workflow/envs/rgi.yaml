@@ -6,4 +6,5 @@ channels:
   - nodefaults
 dependencies:
   - rgi=6.0.5
+  # Needed for run output postprocessing
   - jq=1.8.1

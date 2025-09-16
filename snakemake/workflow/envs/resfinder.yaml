@@ -6,3 +6,5 @@ channels:
   - nodefaults
 dependencies:
   - resfinder=4.7.2
+  # For installation of the database from GitHub
+  - git

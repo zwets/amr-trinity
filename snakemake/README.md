@@ -6,20 +6,16 @@ in [hAMRonization Workflow](https://github.com/pha4ge/hAMRonization_workflow.git
 
 ## Installation
 
-Install prerequisites for building this pipeline (on Ubuntu):
+Create Conda environment *amr-trinity*
 
-    sudo apt install git # build-essential git zlib1g-dev curl wget file jq
+    conda env create -n amr-trinity -f workflow/envs/amr-trinity.yaml
 
-Create the Conda environment
-
-    conda env create -n amr-trinity --file workflow/envs/amr-trinity.yaml
-
-Run a smoke test (this takes a while as Snakemake pulls tools and databases)
+Activate and run smoke test (will take a while as it pull the tools!)
 
     conda activate amr-trinity
-    snakemake --configfile test/mini/config.yaml --use-conda --cores 1
+    snakemake --configfile test/mini/config.yaml --sdm conda --cores 1
 
-Rerun the last command.  It should report "Nothing to be done" in seconds
+If you rerun the last command it should report "Nothing to be done".
 
 
 ## Use

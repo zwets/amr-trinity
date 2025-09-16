@@ -7,4 +7,4 @@
 # reads, or species, then tools that require these inputs will not run.
 
 species	biosample	assembly	read1	read2
-NDM	NDM_biosample	test/mini/test_contig.fna	test/mini/test_R1.fq.gz	test/mini/test_R2.fq.gz
+NDM	NDM	test/mini/test_contig.fna	test/mini/test_R1.fq.gz	test/mini/test_R2.fq.gz
