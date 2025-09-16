@@ -8,7 +8,7 @@ in [hAMRonization Workflow](https://github.com/pha4ge/hAMRonization_workflow.git
 
 Install prerequisites for building this pipeline (on Ubuntu):
 
-    sudo apt install build-essential git zlib1g-dev curl wget file jq
+    sudo apt install git # build-essential git zlib1g-dev curl wget file jq
 
 Create the Conda environment
 
@@ -17,7 +17,7 @@ Create the Conda environment
 Run a smoke test (this takes a while as Snakemake pulls tools and databases)
 
     conda activate amr-trinity
-    snakemake --configfile test/data/mini/config.yaml --use-conda --cores 1
+    snakemake --configfile test/mini/config.yaml --use-conda --cores 1
 
 Rerun the last command.  It should report "Nothing to be done" in seconds
 

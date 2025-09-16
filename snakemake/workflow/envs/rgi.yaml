@@ -6,3 +6,4 @@ channels:
   - nodefaults
 dependencies:
   - rgi=6.0.5
+  - jq=1.8.1
