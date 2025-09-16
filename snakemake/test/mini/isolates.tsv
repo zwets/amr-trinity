@@ -1,0 +1,10 @@
+# This TSV file specifies the list of inputs for a hAMRonization workflow run.
+# Its first line (ex. comment lines and empty lines) must have column headings,
+# and must define at least the columns listed below. Columns may be in any order.
+#
+# Every row must have a (possibly empty) value in every column.  The 'biosample'
+# column must have a unique non-empty value in every row.  If you omit assembly,
+# reads, or species, then tools that require these inputs will not run.
+
+species	biosample	assembly	read1	read2
+NDM	NDM_biosample	test/mini/test_contig.fna	test/mini/test_R1.fq.gz	test/mini/test_R2.fq.gz

@@ -1,0 +1,4 @@
+/databases
+/logs
+/test/*
+!/test/mini

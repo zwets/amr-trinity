@@ -1,0 +1,8 @@
+name: amrfinderplus
+channels:
+  - conda-forge
+  - bioconda
+  # Block default channels to comply with Anaconda licensing
+  - nodefaults
+dependencies:
+  - ncbi-amrfinderplus=4.0.23

@@ -1,0 +1,11 @@
+# Default configuration for running the AMR Trinity workflow
+
+# Path or URL to the sample sheet (no default)
+#samples: "config/isolates.tsv"
+
+# Path where the three tools store their databases
+db_dir: "databases"
+
+# Max threads per rule execution
+threads: 2
+

@@ -1,0 +1,8 @@
+name: amr-trinity
+channels:
+  - conda-forge
+  - bioconda
+  # Block default channels to comply with Anaconda licensing
+  - nodefaults
+dependencies:
+  - snakemake=9.11.2

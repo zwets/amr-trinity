@@ -1,0 +1,8 @@
+name: rgi
+channels:
+  - conda-forge
+  - bioconda
+  # Block default channels to comply with Anaconda licensing
+  - nodefaults
+dependencies:
+  - rgi=6.0.5

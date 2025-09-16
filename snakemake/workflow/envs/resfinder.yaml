@@ -1,0 +1,8 @@
+name: resfinder
+channels:
+  - conda-forge
+  - bioconda
+  # Block default channels to comply with Anaconda licensing
+  - nodefaults
+dependencies:
+  - resfinder=4.7.2
