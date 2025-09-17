@@ -3,6 +3,9 @@
 This workflow is a scaled down and simplified version of the Snakemake workflow
 in [hAMRonization Workflow](https://github.com/pha4ge/hAMRonization_workflow.git).
 
+> **Note**: the workflow operates on assemblies (contigs) only.  ResFinder and
+> and RGI support reads directly, but AMRFinderPlus only takes assemblies.
+
 
 ## Installation
 

@@ -26,18 +26,18 @@ rule get_resfinder_db:
         }} >{log} 2>&1
         """
 
-rule run_resfinder_fna:
+rule run_resfinder:
     input:
         assembly = get_assembly,
         res_db = os.path.join(config['db_dir'], 'resfinder_db'),
         point_db = os.path.join(config['db_dir'], 'pointfinder_db'),
         disinf_db = os.path.join(config['db_dir'], 'disinfinder_db')
     output:
-        dir = directory("results/{sample}/resfinder-fna"),
-        report = "results/{sample}/resfinder-fna/data_resfinder.json"
-    message: "Running rule run_resfinder_fna on {wildcards.sample} assembly"
+        dir = directory("results/{sample}/resfinder"),
+        report = "results/{sample}/resfinder/data_resfinder.json"
+    message: "Running rule run_resfinder on {wildcards.sample} assembly"
     log:
-        "logs/resfinder-fna_{sample}.log"
+        "logs/resfinder_{sample}.log"
     conda:
         "../envs/resfinder.yaml"
     threads:
@@ -50,32 +50,6 @@ rule run_resfinder_fna:
         run_resfinder.py --acquired --point --disinfectant --species '{params.species}' --ignore_missing_species \
             -db_res '{input.res_db}' -db_point '{input.point_db}' -db_disinf '{input.disinf_db}' \
             -ifa '{input.assembly}' -j {output.report} -o {output.dir} >{log} 2>&1
-        """
-
-rule run_resfinder_fqs:
-    input:
-        read1 = get_read1, read2 = get_read2,
-        res_db = os.path.join(config['db_dir'], 'resfinder_db'),
-        point_db = os.path.join(config['db_dir'], 'pointfinder_db'),
-        disinf_db = os.path.join(config['db_dir'], 'disinfinder_db')
-    output:
-        dir = directory("results/{sample}/resfinder-fqs"),
-        report = "results/{sample}/resfinder-fqs/data_resfinder.json"
-    message: "Running rule run_resfinder_fqs on {wildcards.sample} reads"
-    log:
-        "logs/resfinder-fqs_{sample}.log"
-    conda:
-        "../envs/resfinder.yaml"
-    threads:
-        config['threads']
-    params:
-        species = branch(get_species, then=get_species, otherwise="Unknown"),
-    shell:
-        """
-        mkdir -p {output.dir}
-        run_resfinder.py --acquired --point --disinfectant --species '{params.species}' --ignore_missing_species \
-            -db_res '{input.res_db}' -db_point '{input.point_db}' -db_disinf '{input.disinf_db}' \
-            -ifq '{input.read1}' '{input.read2}' -j {output.report} -o {output.dir} >{log} 2>&1
         """
 
 rule hamronize_resfinder:

@@ -15,46 +15,31 @@ import re
 # - Index column 'biosample' must be unique (checked below)
 # - Param 'usecols' lists our required columns (others are ignored)
 
-samples = pd.read_table(config['samples'], index_col="biosample",
+samples = pd.read_table(config['samples'], index_col="id",
     dtype='str', na_filter=False, comment='#', skipinitialspace=True,
-    usecols=['biosample', 'species', 'assembly', 'read1', 'read2'])
+    usecols=['id', 'species', 'assembly'])
 
-# Sanity checks on the samples table: biosample index must be unique and non-empty
+# Sanity checks on samples table
+
 if not all(map(len, samples.index)) or samples.index.size != samples.index.unique().size:
-    raise Exception("Every sample must have a unique 'biosample' identfier in {}".format(config['samples']))
+    raise Exception("Every sample must have a unique id in {}".format(config['samples']))
 
-# Check that biosample has no characters that break things (like '/')
+if not all(map(len, samples.assembly)):
+    raise Exception("Every sample must have an assembly file name in {}".format(config['samples']))
+
 pat = re.compile(r"^[\w.@:=-]+$")
 if not all(map(lambda id: re.match(pat, id), samples.index)):
-    raise Exception("Biosample IDs must not contain spaces or punctuation other than: . @ : = - _")
-
-# Sample Lists ---
-
-# Some tools run on assemblies, others on read pairs.  Here we define
-# lists of indices (= biosample IDs) of samples that have an assembly
-# and/or a read pair, to be used in the 'expand' definitions below.
-
-samples_with_assembly = samples[samples.assembly != ''].index
-samples_with_readpair = samples[samples.read2 != ''].index
-samples_with_either = samples[samples.assembly + samples.read2 != ''].index
+    raise Exception("Sample IDs must not contain spaces or punctuation other than: . @ : = - _")
 
 # Input Helpers ---
 
-# Functions to retrieve column values from the samples table
-# - All these use the {sample} variable in the wildcards param from Snakemake
-# - All return empty string iff the value is absent hence can also act boolean
+# Functions to retrieve column values from the samples table for w.sample
+# - All these use the {sample} variable in the implicit wildcards param
+# - All return empty string iff the value is absent hence can act as boolean
 
+sample_ids = samples.index
 get_species = lambda w: samples.loc[w.sample].species
 get_assembly = lambda w: samples.loc[w.sample].assembly
-get_read1 = lambda w: samples.loc[w.sample].read1
-get_read2 = lambda w: samples.loc[w.sample].read2
-
-# Convenience functions for tools that are can take both reads and assemblies
-# - All functions return empty list when they find nothing, thus can act boolean
-
-get_reads = lambda w: list(filter(None, [get_read1(w), get_read2(w)]))
-get_reads_or_assembly = lambda w: get_reads(w) or list(filter(None, [get_assembly(w)]))
-get_assembly_or_reads = lambda w: list(filter(None, [get_assembly(w)])) or get_reads(w)
 
 # Target rules ---
 
@@ -71,7 +56,7 @@ rule summarize_all:
         json = "results/report.json",
         html = "results/report.html"
     input:
-        expand("results/{sample}/{sample}_hamronized.tsv", sample=samples_with_either),
+        expand("results/{sample}/{sample}_hamronized.tsv", sample=sample_ids),
     conda:
         "envs/hamronization.yaml"
     shell:
@@ -87,11 +72,9 @@ rule summarize_sample:
         json = "results/{sample}/{sample}_hamronized.json",
         html = "results/{sample}/{sample}_hamronized.html"
     input:
-        expand("results/{sample}/amrfinderplus/hamronized_report.tsv", sample=samples_with_assembly),
-        expand("results/{sample}/resfinder-fna/hamronized_report.tsv", sample=samples_with_assembly),
-        expand("results/{sample}/resfinder-fqs/hamronized_report.tsv", sample=samples_with_readpair),
-        expand("results/{sample}/rgi/hamronized_report.tsv", sample=samples_with_assembly),
-        expand("results/{sample}/rgibwt/hamronized_report.tsv", sample=samples_with_readpair),
+        expand("results/{sample}/amrfinderplus/hamronized_report.tsv", sample=sample_ids),
+        expand("results/{sample}/resfinder/hamronized_report.tsv", sample=sample_ids),
+        expand("results/{sample}/rgi/hamronized_report.tsv", sample=sample_ids),
     conda:
         "envs/hamronization.yaml"
     shell:
@@ -104,5 +87,4 @@ rule summarize_sample:
 include: "rules/amrfinderplus.smk"
 include: "rules/resfinder.smk"
 include: "rules/rgi.smk"
-include: "rules/rgi_bwt.smk"
 
