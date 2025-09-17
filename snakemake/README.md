@@ -3,8 +3,8 @@
 This workflow is a scaled down and simplified version of the Snakemake workflow
 in [hAMRonization Workflow](https://github.com/pha4ge/hAMRonization_workflow.git).
 
-> **Note**: the workflow operates on assemblies (contigs) only.  ResFinder and
-> and RGI support reads directly, but AMRFinderPlus only takes assemblies.
+> ResFinder and RGI can process reads, but AMRFinderPlus only works with assemblies,
+> which is why the workflow is defined only for FASTA inputs.
 
 
 ## Installation
@@ -13,27 +13,41 @@ Create Conda environment *amr-trinity*
 
     conda env create -n amr-trinity -f workflow/envs/amr-trinity.yaml
 
-Activate and run smoke test (will take a while as it pull the tools!)
+Activate the environment
 
     conda activate amr-trinity
-    snakemake --configfile test/mini/config.yaml --sdm conda --cores 1
 
-If you rerun the last command it should report "Nothing to be done".
+You now have the `snakemake` command
+
+    snakemake --version
+
+Run the smoke test on the NDM mini sample (this will take a while, as tools
+and databases are getting installed)
+
+    snakemake --cores all --sdm conda -C samples=test/mini/isolates.tsv
+
+If all went well you will find the results in the `results` directory.
 
 
-## Use
+## Usage
 
-Create the sample sheet
+The workflow requires that your assemblies are listed in a "sample sheet",
+a tab-separated file (TSV) with at least these three columns:
 
-    # TODO
+ * `id`: the identifier by which the workflow should refer to the isolate
+ * `species`: name of the species of the isolate, may be empty or `Unknown`
+ * `assembly`: path to the FASTA file with the assembled contigs
 
-Point the config file at the sample sheet
+The TSV file may contain additional columns, and the columns can be in any
+order.  See [test/mini/isolates.tsv](test/mini/isolates.tsv) for reference.
 
-    # TODO
+Once you have the sample sheet, invoke the workflow as above:
 
-Run
+    snakemake --cores all --sdm conda -C samples=path/to/isolates.tsv
 
-    # TODO
+If you want to run the workflow with other default settings
+(see [config/config.yaml](config/config.yaml)), you can override these with
 
-Remember to always put `--use-conda` on the command-line.  Snakemake's error
-reporting will not make it in any way clear that you didn't.
+    snakemake --configfile ...
+
+The `--cores` and `--sdm conda` or `--use-conda` are always needed.

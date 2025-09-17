@@ -7,7 +7,6 @@ rule get_rgi_db:
         "logs/rgi_db.log"
     shell:
         """{{
-        mkdir -p {params.db_dir}
         wget -cqO {params.db_dir}/card.tar.bz2 'https://card.mcmaster.ca/latest/data'
         tar -C {params.db_dir} -xf {params.db_dir}/card.tar.bz2
         rm -f {params.db_dir}/card.tar.bz2
@@ -27,7 +26,7 @@ rule run_rgi:
     conda:
         "../envs/rgi.yaml"
     threads:
-        config['threads']
+        config['threads']['rgi']
     params:
         out_dir = "results/{sample}/rgi"
     shell:
@@ -38,7 +37,6 @@ rule run_rgi:
         FNA="$(realpath '{input.contigs}')"
         CARD="$(realpath '{input.card_db}')"
         META="$(realpath '{output.metadata}')"
-        mkdir -p {params.out_dir}
         cd {params.out_dir}
         rgi load -i "$CARD" --local
         rgi main --local --clean --input_sequence "$FNA" --output_file rgi --num_threads {threads}

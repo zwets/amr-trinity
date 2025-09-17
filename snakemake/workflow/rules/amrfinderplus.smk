@@ -26,15 +26,15 @@ rule run_amrfinderplus:
         "logs/amrfinderplus_{sample}.log"
     conda:
         "../envs/amrfinderplus.yaml"
+    threads:
+        config['threads']['amrfinderplus']
     params:
         species = lambda w: get_species(w).replace(' ','_')
-    threads:
-        config['threads']
     shell:
         """
         # Set SPECIES_OPT if and only if param.species is supported by AFP
         [ -n '{params.species}' ] && amrfinder --list_organisms -d {input.db_dir} 2>/dev/null | fgrep -q '{params.species}' && SPECIES_OPT='-O {params.species}' || SPECIES_OPT=''
-        amrfinder -n '{input.contigs}' $SPECIES_OPT -o '{output.report}' -d '{input.db_dir}' >{log} 2>&1
+        amrfinder --threads {threads} -n '{input.contigs}' $SPECIES_OPT -o '{output.report}' -d '{input.db_dir}' >{log} 2>&1
         sed -En 's/^Software version: (.*)$/--analysis_software_version \\1/p;s/^Database version: (.*)$/--reference_database_version \\1/p' {log} | sort -u >{output.metadata}
         """
 

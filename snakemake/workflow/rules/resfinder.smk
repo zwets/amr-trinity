@@ -41,13 +41,13 @@ rule run_resfinder:
     conda:
         "../envs/resfinder.yaml"
     threads:
-        config['threads']
+        config['threads']['resfinder']
     params:
         species = branch(get_species, then=get_species, otherwise="Unknown"),
     shell:
         """
         run_resfinder.py --acquired --point --disinfectant --species '{params.species}' --ignore_missing_species \
-            -db_res '{input.res_db}' -db_point '{input.point_db}' -db_disinf '{input.disinf_db}' \
+            --kma_threads {threads} -db_res '{input.res_db}' -db_point '{input.point_db}' -db_disinf '{input.disinf_db}' \
             -ifa '{input.assembly}' -j {output.report} -o {output.dir} >{log} 2>&1
         """
 

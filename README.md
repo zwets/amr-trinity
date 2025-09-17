@@ -2,25 +2,33 @@
 
 _Run the "Big Three" AMR detection tools with unified output_
 
+**WORK IN PROGRESS**
+
 ### Background
 
-This repository provides various ways to run the "Big Three" AMR detection tools
-over a collection of asseblies and obtain collated unified output.
+This repository provides two ways to run the "Big Three" AMR detection tools
+over a collection of assemblies and obtain collated unified output.
 
 The project builds on [hAMRonization](https://github.com/pha4ge/hAMRonization),
 which maintains a collection of converters to harmonise AMR tool output formats.
 
-The hAMRonization project had a
-[proof of concept workflow](https://github.com/pha4ge/hAMRonization_workflow)
-that ran all (18) supported tools, but this was cumbersome to maintain due to
-the myriad requirements and installation methods of the tools.
+[hAMRonization workflow](https://github.com/pha4ge/hAMRonization_workflow) was
+a proof of concept that ran all (18) hAMRonization-supported tools in one go,
+but it was very hard to maintain.
 
-In **AMR Trinity** we scale down the hAMRonization workflow to the "Big Three":
+In **AMR Trinity** we scale down the hAMRonization workflow to the "Big Three",
+the three tools that have their own actively curated databases and algorithms.
 
  * [AMRFinderPlus](https://github.com/ncbi/amr)
  * [ResFinder](https://bitbucket.org/genomicepidemiology/resfinder)
  * [RGI/CARD](https://github.com/arpcard/rgi)
 
-These three were chosen because - apart from being widely used - each has their
-own actively curated database and algorithms.
+### Snakemake Workflow
+
+The Snakemake workflow was directly taken from the hAMRonization workflow.
+See the [snakemake](snakemake) directory.
+
+### Nextflow Workflow
+
+**WIP**
 
