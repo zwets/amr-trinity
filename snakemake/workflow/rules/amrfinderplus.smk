@@ -21,13 +21,13 @@ rule run_amrfinderplus:
     output:
         report = "results/{sample}/amrfinderplus/report.tsv",
         metadata = "results/{sample}/amrfinderplus/metadata.txt"
-    message: "Running rule run_amrfinderplus on {wildcards.sample} with contigs"
+    message: "Running AMRFinderPlus on {wildcards.sample}"
     log:
         "logs/amrfinderplus_{sample}.log"
     conda:
         "../envs/amrfinderplus.yaml"
     params:
-        species = branch(get_species, then=lambda w: get_species(w).replace(' ','_'))
+        species = lambda w: get_species(w).replace(' ','_')
     threads:
         config['threads']
     shell:

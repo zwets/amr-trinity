@@ -1,10 +1,8 @@
-configfile: 'config/config.yaml'
+# Load the default configuration settings for the workflow.
+# Use snakemake --configfile=... to add and override settings,
+# notably set 'samples' to the path to your isolates.tsv
 
-import pandas as pd
-import re
-# already default: shell.executable("bash")
-# already default: shell.prefix("set -euo pipefail;")
-# already set?: shell.prefix("IFS=$'\n\t')  # Space excluded?
+configfile: 'config/config.yaml'
 
 # Samples Table ---
 
@@ -14,6 +12,9 @@ import re
 # - Lenienty skip spaces that start a cell value
 # - Index column 'biosample' must be unique (checked below)
 # - Param 'usecols' lists our required columns (others are ignored)
+
+import pandas as pd
+import re
 
 samples = pd.read_table(config['samples'], index_col="id",
     dtype='str', na_filter=False, comment='#', skipinitialspace=True,
@@ -37,7 +38,7 @@ if not all(map(lambda id: re.match(pat, id), samples.index)):
 # - All these use the {sample} variable in the implicit wildcards param
 # - All return empty string iff the value is absent hence can act as boolean
 
-sample_ids = samples.index
+sample_ids = samples[samples.assembly != ''].index
 get_species = lambda w: samples.loc[w.sample].species
 get_assembly = lambda w: samples.loc[w.sample].assembly
 
@@ -74,7 +75,7 @@ rule summarize_sample:
     input:
         expand("results/{sample}/amrfinderplus/hamronized_report.tsv", sample=sample_ids),
         expand("results/{sample}/resfinder/hamronized_report.tsv", sample=sample_ids),
-        expand("results/{sample}/rgi/hamronized_report.tsv", sample=sample_ids),
+        expand("results/{sample}/rgi/hamronized_report.tsv", sample=sample_ids)
     conda:
         "envs/hamronization.yaml"
     shell:

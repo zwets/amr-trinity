@@ -1,6 +1,6 @@
 rule get_rgi_db:
     output:
-        card_db = os.path.join(config['db_dir'], "card", "card.json")
+        os.path.join(config['db_dir'], "card", "card.json")
     params:
         db_dir = os.path.join(config['db_dir'], "card")
     log:
@@ -8,7 +8,7 @@ rule get_rgi_db:
     shell:
         """{{
         mkdir -p {params.db_dir}
-        wget -c -q -O {params.db_dir}/card.tar.bz2 'https://card.mcmaster.ca/latest/data'
+        wget -cqO {params.db_dir}/card.tar.bz2 'https://card.mcmaster.ca/latest/data'
         tar -C {params.db_dir} -xf {params.db_dir}/card.tar.bz2
         rm -f {params.db_dir}/card.tar.bz2
         }} >{log} 2>&1
@@ -21,7 +21,7 @@ rule run_rgi:
     output:
         report = "results/{sample}/rgi/rgi.txt",
         metadata = "results/{sample}/rgi/metadata.txt"
-    message: "Running rule run_rgi on {wildcards.sample} with contigs"
+    message: "Running RGI on {wildcards.sample}"
     log:
         "logs/rgi_{sample}.log"
     conda:

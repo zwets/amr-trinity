@@ -14,7 +14,7 @@ rule get_resfinder_db:
         disinf_ver = 'master'
     shell:
         """
-        {{ set -euo pipefail
+        {{
         # Check out the databases at the commit specified by param.*_ver above
         git clone --depth=1 -b {params.res_ver} https://bitbucket.org/genomicepidemiology/resfinder_db.git {output.res_db}
         git clone --depth=1 -b {params.point_ver} https://bitbucket.org/genomicepidemiology/pointfinder_db.git {output.point_db}
@@ -35,7 +35,7 @@ rule run_resfinder:
     output:
         dir = directory("results/{sample}/resfinder"),
         report = "results/{sample}/resfinder/data_resfinder.json"
-    message: "Running rule run_resfinder on {wildcards.sample} assembly"
+    message: "Running ResFinder on {wildcards.sample}"
     log:
         "logs/resfinder_{sample}.log"
     conda:
@@ -46,7 +46,6 @@ rule run_resfinder:
         species = branch(get_species, then=get_species, otherwise="Unknown"),
     shell:
         """
-        mkdir -p {output.dir}
         run_resfinder.py --acquired --point --disinfectant --species '{params.species}' --ignore_missing_species \
             -db_res '{input.res_db}' -db_point '{input.point_db}' -db_disinf '{input.disinf_db}' \
             -ifa '{input.assembly}' -j {output.report} -o {output.dir} >{log} 2>&1
@@ -54,13 +53,13 @@ rule run_resfinder:
 
 rule hamronize_resfinder:
     input:
-        report = "results/{sample}/resfinder-{sfx}/data_resfinder.json",
+        "results/{sample}/resfinder/data_resfinder.json",
     output:
-        "results/{sample}/resfinder-{sfx}/hamronized_report.tsv"
+        "results/{sample}/resfinder/hamronized_report.tsv"
     log:
-        "logs/resfinder-{sfx}_{sample}_hamronize.log"
+        "logs/resfinder_{sample}_hamronize.log"
     conda:
         "../envs/hamronization.yaml"
     shell:
-        "hamronize resfinder {input.report} >{output} 2>{log}"
+        "hamronize resfinder {input} >{output} 2>{log}"
 
