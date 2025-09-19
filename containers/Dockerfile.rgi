@@ -1,0 +1,45 @@
+# Use miniconda with Python 3.13
+FROM docker.io/continuumio/miniconda3:25.3.1-1
+
+# Stop container's bash from leaving .bash_histories everywhere
+# and add convenience aliases for interactive (debugging) use
+RUN echo "unset HISTFILE" >>/etc/bash.bashrc && \
+    echo "alias ls='ls --color=auto' l='ls -CF' la='l -a' ll='l -l' lla='ll -a'" >>/etc/bash.bashrc
+
+# Python dependencies
+# ----------------------------------------------------------------------
+
+RUN conda install -c conda-forge -c bioconda -c nodefaults --quiet --yes rgi=6.0.5 jq=1.8.1 && \
+    conda clean -qy --tarballs
+
+# Install Database in the container
+# ----------------------------------------------------------------------
+
+RUN mkdir /database && cd /database && \
+    wget -cqO card.tar.bz2 'https://card.mcmaster.ca/latest/data' && \
+    tar -xf card.tar.bz2 && \
+    rm -f card.tar.bz2
+
+# Install 'run-rgi' wrapper that does the 'load' and sets the database
+# ----------------------------------------------------------------------
+
+# RGI writes a large LocalDB directory in PWD, and there is no option to
+# change that or make it clean it up.  We would therefore like to run it
+# in /tmp but then we need the input and output file parameters to make
+# their paths absolute.  We leave this for now, can implement later with
+# a proper wrapper script.
+
+RUN printf '#!/bin/sh\nrgi load -i /database/card.json --local && rgi main --local --clean "$@"\n' \
+    >/usr/local/bin/run-rgi && \
+    chmod +x /usr/local/bin/run-rgi
+
+# Set up workdir and default command
+#----------------------------------------------------------------------
+
+# Change to the mounted workdir as initial PWD
+WORKDIR /workdir
+
+# No ENTRYPOINT means that any binary on the PATH in the container can
+# be run.  Set CMD so that without arguments, user gets invocation help
+CMD ["echo", "Usage: run-rgi --input_sequence FASTA --output_file FILE [--num_threads N]"]
+

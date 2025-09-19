@@ -1,0 +1,44 @@
+# Use miniconda with Python 3.13
+FROM docker.io/continuumio/miniconda3:25.3.1-1
+
+# Stop container's bash from leaving .bash_histories everywhere
+# and add convenience aliases for interactive (debugging) use
+RUN echo "unset HISTFILE" >>/etc/bash.bashrc && \
+    echo "alias ls='ls --color=auto' l='ls -CF' la='l -a' ll='l -l' lla='ll -a'" >>/etc/bash.bashrc
+
+# Python dependencies
+# ----------------------------------------------------------------------
+
+RUN conda install -c conda-forge -c bioconda -c nodefaults --quiet --yes resfinder=4.7.2 && \
+    conda clean -qy --tarballs
+
+# Install Databases in the container
+# ----------------------------------------------------------------------
+
+RUN mkdir -p /databases
+WORKDIR /databases
+
+RUN git clone --depth=1 -b master https://bitbucket.org/genomicepidemiology/resfinder_db.git && \
+    git clone --depth=1 -b master https://bitbucket.org/genomicepidemiology/pointfinder_db.git && \
+    git clone --depth=1 -b master https://bitbucket.org/genomicepidemiology/disinfinder_db.git && \
+    grep -Ev '^[[:space:]]*(#|$)' resfinder_db/config   | cut -f1 | xargs -I@ kma_index -i resfinder_db/@.fsa -o resfinder_db/@ \
+    grep -Ev '^[[:space:]]*(#|$)' pointfinder_db/config | cut -f1 | xargs -I@ sh -c 'kma_index -i pointfinder_db/@/*.fsa -o pointfinder_db/@/@' \
+    grep -Ev '^[[:space:]]*(#|$)' disinfinder_db/config | cut -f1 | xargs -I@ kma_index -i disinfinder_db/@.fsa -o disinfinder_db/@
+
+# Install resfinder wrapper script
+# ----------------------------------------------------------------------
+
+RUN printf '#!/bin/sh\nrun_resfinder.py --acquired --point --disinfectant --ignore_missing_species -db_res /databases/resfinder_db -db_point /databases/pointfinder_db -db_disinf /databases/disinfinder_db "$@"' \
+    >/usr/local/bin/resfinder && \
+    chmod +x /usr/local/bin/resfinder
+
+# Set up workdir and default command
+#----------------------------------------------------------------------
+
+# Change to the mounted workdir as initial PWD
+WORKDIR /workdir
+
+# No ENTRYPOINT means that any binary on the PATH in the container can
+# be run.  Set CMD so that without arguments, user gets resfinder --help.
+CMD ["echo", "Usage: resfinder -ifa FASTA -s SPECIES -o DIR [-j JSON] [--kma_threads N]"]
+

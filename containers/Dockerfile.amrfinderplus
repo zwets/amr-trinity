@@ -1,0 +1,45 @@
+# Use miniconda with Python 3.13
+FROM docker.io/continuumio/miniconda3:25.3.1-1
+
+# Stop container's bash from leaving .bash_histories everywhere
+# and add convenience aliases for interactive (debugging) use
+RUN echo "unset HISTFILE" >>/etc/bash.bashrc && \
+    echo "alias ls='ls --color=auto' l='ls -CF' la='l -a' ll='l -l' lla='ll -a'" >>/etc/bash.bashrc
+
+# Conda installable
+# ----------------------------------------------------------------------
+
+RUN conda install -c conda-forge -c bioconda -c nodefaults --quiet --yes ncbi-amrfinderplus=4.0.23 && \
+    conda clean -qy --tarballs
+
+# Ubuntu dependencies
+# ----------------------------------------------------------------------
+
+# AFP fails to index its database without libmpi40
+RUN apt-get -qq update && apt-get -qq install libopenmpi-dev
+
+# Install Database in the container
+# ----------------------------------------------------------------------
+
+RUN mkdir /database && \
+    amrfinder_update -d /database
+
+RUN ln -srfT `realpath /database/latest` /database/latest
+
+# Install amrfinderplus wrapper script that already sets database option
+# ----------------------------------------------------------------------
+
+RUN printf '#!/bin/sh\namrfinder -d /database/latest "$@"' \
+    >/usr/local/bin/amrfinderplus && \
+    chmod +x /usr/local/bin/amrfinderplus
+
+# Set up workdir and default command
+#----------------------------------------------------------------------
+
+# Change to the mounted workdir as initial PWD
+WORKDIR /workdir
+
+# No ENTRYPOINT means that any binary on the PATH in the container can
+# be run.  Set CMD so that without arguments, user gets resfinder --help.
+CMD ["echo", "Usage: amrfinderplus -n FASTA -O SPECIES -o FILE [--threads N]"]
+
