@@ -1,0 +1,6 @@
+.nextflow.log
+.nextflow.log.*
+nxf.log
+nxf.log.*
+work
+nxf.work

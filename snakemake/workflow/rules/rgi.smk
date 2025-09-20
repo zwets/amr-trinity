@@ -42,8 +42,7 @@ rule run_rgi:
         rgi main --local --clean --input_sequence "$FNA" --output_file rgi --num_threads {threads}
 	# Now remove the localDB (why doesn't it put this in /tmp?)
 	rm -rf localDB || true
-        # We extract the database version from the JSON, as 'rgi database -v' gives "N/A"
-        echo "--analysis_software_version $(rgi main --version) --reference_database_version $(jq -r '._version' "$CARD")" >"$META"
+        echo "--analysis_software_version $(rgi main --version) --reference_database_version $(rgi database --version)" >"$META"
         }} >{log} 2>&1
         """
 
