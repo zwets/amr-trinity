@@ -2,20 +2,41 @@
 
 include { samplesheetToList } from 'plugin/nf-schema'
 
+process summarize {
+    publishDir "${params.outdir}"
+    conda 'hamronization=1.1.9'
+    cpus 1
+
+    input:
+    path inputs
+
+    output:
+    path('report.tsv'), emit: tsv
+    path('report.json'), emit: json
+    path('report.html'), emit: html
+
+    script:
+    """
+    hamronize summarize -t tsv -o report.tsv $inputs
+    hamronize summarize -t json -o report.json $inputs
+    hamronize summarize -t interactive -o report.html $inputs
+    """
+}
+
 process hamronize {
     conda 'hamronization=1.1.9'
     cpus 1
 
     input:
-    tuple val(tool), path(results), path(metadata)
+    tuple val(id), val(tool), path(metadata), path(results)
 
     output:
-    path 'hamronized.tsv'
+    path "${id}-${tool}.tsv"
 
     script:
     """
-    METADATA="$(cat $metadata)"
-    hamronize $tool \$METADATA $results >'hamronized.tsv'
+    METADATA=\$(cat $metadata)
+    hamronize $tool \$METADATA $results >'${id}-${tool}.tsv'
     """
 }
 
@@ -27,15 +48,15 @@ process amrfinderplus {
     tuple val(id), val(species), path(contigs)
 
     output:
-    path 'amrfinderplus.tsv'
-    path 'metadata.txt'
+    tuple val(id), val('amrfinderplus'), path('metadata.txt'), path('amrfinderplus.tsv')
 
     script:
     """
+    printf -- '--input_file_name ${contigs.name} ' >metadata.txt
     [ -n '$species' ] && amrfinder --list_organisms /database 2>/dev/null | fgrep -q '$species' && SPECIES_OPT='-O $species' || SPECIES_OPT=''
-    amrfinderplus -n $contigs \$SPECIES_OPT -o amrfinderplus.tsv --threads ${task.cpus} |&
-        sed -En 's/^Software version: (.*)\$/--analysis_software_version \\1/p;s/^Database version: (.*)\$/--reference_database_version \\1/p' |
-        sort -u | tr '\\n' ' ' >metadata.txt
+    amrfinderplus -n $contigs \$SPECIES_OPT -o amrfinderplus.tsv --threads ${task.cpus} 2>stderr.log
+    # We grep the metadata (program and database version) from stderr
+    sed -En 's/^Software version: (.*)\$/--analysis_software_version \\1/p;s/^Database version: (.*)\$/--reference_database_version \\1/p' stderr.log | sort -u | tr '\\n' ' ' >>metadata.txt
     """
 }
 
@@ -47,13 +68,14 @@ process resfinder {
     tuple val(id), val(species), path(contigs)
 
     output:
-    path 'resfinder.json'
-    path 'metadata.txt'
+    //path 'resfinder.json', emit: results
+    //path 'metadata.txt', emit: metadata
+    tuple val(id), val('resfinder'), path('metadata.txt'), path('resfinder.json')
 
     script:
     """
-    resfinder --acquired --point --disinfectant --species '$species' --ignore_missing_species -ifa $contigs -j resfinder.json -o . --kma_threads ${task.cpus}
     touch metadata.txt
+    resfinder --acquired --point --disinfectant --species '$species' --ignore_missing_species -ifa $contigs -j resfinder.json -o . --kma_threads ${task.cpus}
     """
 }
 
@@ -65,22 +87,30 @@ process rgi {
     tuple val(id), val(species), path(contigs)
 
     output:
-    path 'rgi.txt'
-    path 'metadata.txt'
+    //path 'rgi.txt', emit: results
+    //path 'metadata.txt', emit: metadata
+    tuple val(id), val('rgi'), path('metadata.txt'), path('rgi.txt')
 
     script:
     """
     run-rgi --input_sequence $contigs --output_file rgi --num_threads ${task.cpus}
     rm -rf localDB || true
-    printf -- '--analysis_software_version %s --reference_database_version %s\\n' \$(rgi main --version) \$(jq -r '._version' rgi.json) >metadata.txt
+    printf -- '--input_file_name %s --analysis_software_version %s --reference_database_version %s' ${contigs.name} \$(rgi main --version) \$(rgi database --version) >metadata.txt
     """
 }
 
 workflow {
-    // Parse the sample sheet into a channel of (id, species, assembly) tuples
-    ch_input = Channel.fromList(samplesheetToList(params.input, 'schema.json'))
-        | map { id, species, assembly -> tuple(id, species, file(assembly)) } // convert string to path
 
-    ch_input | (rgi & resfinder & amrfinderplus)
+    // Parse the sample sheet into a channel of (id, species, assembly) tuples and connect to the tools in parallel
+    Channel.fromList(samplesheetToList(params.input, 'schema.json'))
+        | map { id, species, assembly -> tuple(id, species, file(assembly)) } // convert string to path
+        | (amrfinderplus & resfinder & rgi)
+
+    // Join the output of the tools into a single channel and feed into hamronization process
+    amrfinderplus.out.mix(resfinder.out, rgi.out)
+        | hamronize 
+        | collect
+        | summarize
+
 }
 

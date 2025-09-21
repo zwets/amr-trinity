@@ -1,6 +1,9 @@
-.nextflow.log
-.nextflow.log.*
-nxf.log
-nxf.log.*
-work
-nxf.work
+/.nextflow.log
+/.nextflow.log.*
+/test/*
+!/test/mini
+/results
+/nxf.log
+/nxf.log.*
+/nxf.work
+/work
