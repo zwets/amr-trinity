@@ -3,12 +3,10 @@
 This is a quick shot at containerising the three tools _with_ their
 databases included, for ease of integration with Nextflow.
 
-These containers can probably be made leaner, they're effectively the
-Ubuntu-based Miniconda image by Continuum, with the Bioconda/Forge
-Conda envs of the three tools added on.
+The wrapper scripts are set up such that the user needn't pass the
+location of the database - which are inside the container.
 
-On top of that come their databases and a small wrapper script that
-pre-sets the database paths to the container-internal location.
+**TODO** The wrapper scripts are a quick kludge and need cleanup.
 
 
 ## Build

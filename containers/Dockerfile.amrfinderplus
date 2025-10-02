@@ -10,21 +10,22 @@ RUN echo "unset HISTFILE" >>/etc/bash.bashrc && \
 # ----------------------------------------------------------------------
 
 RUN conda install -c conda-forge -c bioconda -c nodefaults --quiet --yes ncbi-amrfinderplus=4.0.23 && \
-    conda clean -qy --tarballs
+    conda clean -qafy
 
 # Ubuntu dependencies
 # ----------------------------------------------------------------------
 
 # AFP fails to index its database without libmpi40
-RUN apt-get -qq update && apt-get -qq install libopenmpi-dev
+RUN apt-get -qq update && apt-get -qq install libopenmpi-dev && \
+    apt-get -qq clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Database in the container
 # ----------------------------------------------------------------------
 
 RUN mkdir /database && \
-    amrfinder_update -d /database
-
-RUN ln -srfT `realpath /database/latest` /database/latest
+    amrfinder_update -d /database && \
+    ln -srfT `realpath /database/latest` /database/latest
 
 # Install amrfinderplus wrapper script that already sets database option
 # ----------------------------------------------------------------------

@@ -10,7 +10,7 @@ RUN echo "unset HISTFILE" >>/etc/bash.bashrc && \
 # ----------------------------------------------------------------------
 
 RUN conda install -c conda-forge -c bioconda -c nodefaults --quiet --yes rgi=6.0.5 jq=1.8.1 && \
-    conda clean -qy --tarballs
+    conda clean -qafy
 
 # Install Database in the container
 # ----------------------------------------------------------------------
