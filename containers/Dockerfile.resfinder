@@ -10,7 +10,7 @@ RUN echo "unset HISTFILE" >>/etc/bash.bashrc && \
 # ----------------------------------------------------------------------
 
 RUN conda install -c conda-forge -c bioconda -c nodefaults --quiet --yes resfinder=4.7.2 && \
-    conda clean -qy --tarballs
+    conda clean -qafy
 
 # Install Databases in the container
 # ----------------------------------------------------------------------
@@ -21,8 +21,8 @@ WORKDIR /databases
 RUN git clone --depth=1 -b master https://bitbucket.org/genomicepidemiology/resfinder_db.git && \
     git clone --depth=1 -b master https://bitbucket.org/genomicepidemiology/pointfinder_db.git && \
     git clone --depth=1 -b master https://bitbucket.org/genomicepidemiology/disinfinder_db.git && \
-    grep -Ev '^[[:space:]]*(#|$)' resfinder_db/config   | cut -f1 | xargs -I@ kma_index -i resfinder_db/@.fsa -o resfinder_db/@ \
-    grep -Ev '^[[:space:]]*(#|$)' pointfinder_db/config | cut -f1 | xargs -I@ sh -c 'kma_index -i pointfinder_db/@/*.fsa -o pointfinder_db/@/@' \
+    grep -Ev '^[[:space:]]*(#|$)' resfinder_db/config   | cut -f1 | xargs -I@ kma_index -i resfinder_db/@.fsa -o resfinder_db/@ && \
+    grep -Ev '^[[:space:]]*(#|$)' pointfinder_db/config | cut -f1 | xargs -I@ sh -c 'kma_index -i pointfinder_db/@/*.fsa -o pointfinder_db/@/@' && \
     grep -Ev '^[[:space:]]*(#|$)' disinfinder_db/config | cut -f1 | xargs -I@ kma_index -i disinfinder_db/@.fsa -o disinfinder_db/@
 
 # Install resfinder wrapper script
