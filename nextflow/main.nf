@@ -3,7 +3,7 @@
 include { samplesheetToList } from 'plugin/nf-schema'
 
 process summarize {
-    publishDir "${params.outdir}"
+    publishDir "${params.outdir}", mode: 'copy'
     conda 'hamronization=1.1.9'
     cpus 1
 
