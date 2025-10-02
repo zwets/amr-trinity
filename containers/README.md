@@ -3,19 +3,23 @@
 This is a quick shot at containerising the three tools _with_ their
 databases included, for ease of integration with Nextflow.
 
-The wrapper scripts are set up such that the user needn't pass the
-location of the database - which are inside the container.
+Wrapper scripts are set up such that the user needn't pass the location
+of the databases (which we provide inside the containers).
 
 **TODO** The wrapper scripts are a quick kludge and need cleanup.
 
 
 ## Build
 
-To build the containers
+To build the container images
 
     podman build -t rgi:6.0.5 -f Dockerfile.rgi .
     podman build -t resfinder:4.7.2 -f Dockerfile.resfinder .
     podman build -t amrfinderplus:4.0.23 -f Dockerfile.amrfinderplus .
+
+There is also `Dockerfile.all` that produces an 'all-in-one' image with
+all three tools.  This saves on size (3.3G vs 6.2G for the three added up)
+but isn't very modular.
 
 
 ## Run
