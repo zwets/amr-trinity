@@ -25,10 +25,25 @@ the three tools that have their own actively curated databases and algorithms.
 
 ### Snakemake Workflow
 
-The Snakemake workflow was directly taken from the hAMRonization workflow.
+The Snakemake workflow was directly taken from the hAMRonization workflow.  It
+pulls in the three tools and the hamronization tool through Conda.
+
 See the [snakemake](snakemake) directory.
 
 ### Nextflow Workflow
 
-**WIP**
+The [Nextflow implementation](nextflow) is a "simplest thing that could possibly
+work".  In contrast to the Snakemake workflow it uses containers.
+
+A particularly convenient aspect of using containers is that we can include the
+database inside the container.
+
+### Containers
+
+The [containers](containers) directory has Dockerfiles to produce the three
+containers.
+
+**TODO**
+ - Containerise hAMRonization as well?
+ - Push containers to Docker Hub, Quay, GHRC
 
