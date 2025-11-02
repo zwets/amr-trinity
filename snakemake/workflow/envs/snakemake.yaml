@@ -1,4 +1,4 @@
-name: amr-trinity
+name: snakemake
 channels:
   - conda-forge
   - bioconda

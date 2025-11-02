@@ -9,17 +9,13 @@ in [hAMRonization Workflow](https://github.com/pha4ge/hAMRonization_workflow.git
 
 ## Installation
 
-Create Conda environment *amr-trinity*
+Create Conda environment *snakemake*
 
-    conda env create -n amr-trinity -f workflow/envs/amr-trinity.yaml
+    conda env create -n snakemake -f workflow/envs/snakemake.yaml
 
 Activate the environment
 
-    conda activate amr-trinity
-
-You now have the `snakemake` command
-
-    snakemake --version
+    conda activate snakemake
 
 Run the smoke test on the NDM mini sample (this will take a while, as tools
 and databases are getting installed)
@@ -31,21 +27,23 @@ If all went well you will find the results in the `results` directory.
 
 ## Usage
 
-The workflow requires that your assemblies are listed in a "sample sheet",
-a tab-separated file (TSV) with at least these three columns:
+The workflow requires that your assemblies are listed in a "sample sheet".
+This is a TSV with a header row that defines at least these three columns:
 
  * `id`: the identifier by which the workflow should refer to the isolate
  * `species`: name of the species of the isolate, may be empty or `Unknown`
  * `assembly`: path to the FASTA file with the assembled contigs
 
-The TSV file may contain additional columns, and the columns can be in any
-order.  See [test/mini/isolates.tsv](test/mini/isolates.tsv) for reference.
+There may be other columns, and they can be in any order.
+See [test/mini/isolates.tsv](test/mini/isolates.tsv) for reference.
 
 Once you have the sample sheet, invoke the workflow as above:
 
     snakemake --cores all --sdm conda -C samples=path/to/isolates.tsv
 
-If you want to run the workflow with other default settings
+By default the results for each `$id` are written into `./results/$id/`.
+
+If you want to run the workflow with different config settings
 (see [config/config.yaml](config/config.yaml)), you can override these with
 
     snakemake --configfile ...

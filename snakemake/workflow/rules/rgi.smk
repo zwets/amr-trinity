@@ -1,4 +1,6 @@
 rule get_rgi_db:
+    # Can change this rule to work with the cache directive
+    # See https://snakemake.readthedocs.io/en/stable/executing/caching.html
     output:
         os.path.join(config['db_dir'], "card", "card.json")
     params:

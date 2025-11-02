@@ -13,11 +13,11 @@ The project builds on [hAMRonization](https://github.com/pha4ge/hAMRonization),
 which maintains a collection of converters to harmonise AMR tool output formats.
 
 [hAMRonization workflow](https://github.com/pha4ge/hAMRonization_workflow) was
-a proof of concept that ran all (18) hAMRonization-supported tools in one go,
-but it was very hard to maintain.
+a proof of concept test-case workflow that ran all (18) hAMRonization-supported
+tools in one go.
 
-In **AMR Trinity** we scale down the hAMRonization workflow to the "Big Three",
-the three tools that have their own actively curated databases and algorithms.
+**AMR Trinity** scales down the hAMRonization workflow to the "Big Three", the
+three tools that have their own actively curated databases and algorithms.
 
  * [AMRFinderPlus](https://github.com/ncbi/amr)
  * [ResFinder](https://bitbucket.org/genomicepidemiology/resfinder)
@@ -25,15 +25,15 @@ the three tools that have their own actively curated databases and algorithms.
 
 ### Snakemake Workflow
 
-The Snakemake workflow was directly taken from the hAMRonization workflow.  It
-pulls in the three tools and the hamronization tool through Conda.
+The Snakemake workflow was directly taken from the hAMRonization workflow, then
+scaled down.  It pulls in the three tools and the hamronization tool through Conda.
 
 See the [snakemake](snakemake) directory.
 
 ### Nextflow Workflow
 
 The [Nextflow implementation](nextflow) is a "simplest thing that could possibly
-work".  In contrast to the Snakemake workflow it uses containers.
+work".  In contrast to the Snakemake workflow it uses _containers_.
 
 A particularly convenient aspect of using containers is that we can include the
 database inside the container.
@@ -44,6 +44,6 @@ The [containers](containers) directory has Dockerfiles to produce the three
 containers.
 
 **TODO**
- - Containerise hAMRonization as well?
+ - Containerise hAMRonization as well and/or make the containers do hAMRronization?
  - Push containers to Docker Hub, Quay, GHRC
 
