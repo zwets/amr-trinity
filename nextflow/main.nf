@@ -1,7 +1,5 @@
 #!/usr/bin/env nextflow
 
-include { samplesheetToList } from 'plugin/nf-schema'
-
 process summarize {
     publishDir "${params.outdir}", mode: 'copy'
     conda 'hamronization=1.1.9'
@@ -24,6 +22,7 @@ process summarize {
 }
 
 process hamronize {
+    publishDir "${params.outdir}", mode: 'copy'
     conda 'hamronization=1.1.9'
     cpus 1
 
@@ -68,8 +67,6 @@ process resfinder {
     tuple val(id), val(species), path(contigs)
 
     output:
-    //path 'resfinder.json', emit: results
-    //path 'metadata.txt', emit: metadata
     tuple val(id), val('resfinder'), path('metadata.txt'), path('resfinder.json')
 
     script:
@@ -87,8 +84,6 @@ process rgi {
     tuple val(id), val(species), path(contigs)
 
     output:
-    //path 'rgi.txt', emit: results
-    //path 'metadata.txt', emit: metadata
     tuple val(id), val('rgi'), path('metadata.txt'), path('rgi.txt')
 
     script:
@@ -102,14 +97,14 @@ process rgi {
 workflow {
 
     // Parse the sample sheet into a channel of (id, species, assembly) tuples and connect to the tools in parallel
-    Channel.fromList(samplesheetToList(params.input, 'schema.json'))
-        | map { id, species, assembly -> tuple(id, species, file(assembly)) } // convert string to path
+    Channel.fromPath(params.input).splitCsv(header: true, sep: '\t')  // boycott CSV!
+        | map { row -> tuple(row.id, row.species, file(row.assembly)) }
         | (amrfinderplus & resfinder & rgi)
 
-    // Join the output of the tools into a single channel and feed into hamronization process
-    amrfinderplus.out.mix(resfinder.out, rgi.out)
+    // Pull the tool outputs into a single channel, harmonise each, collect all harmoniseds, and summarize overall
+    Channel.of().mix(amrfinderplus.out, resfinder.out, rgi.out)
         | hamronize 
-        | collect
+        | collect // into array
         | summarize
 
 }
