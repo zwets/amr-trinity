@@ -55,12 +55,12 @@ process amrfinderplus {
     SPECIES=`echo '$species' | sed -e 's/ /_/g'`
     [ -n "\$SPECIES" ] && amrfinderplus --list_organisms 2>/dev/null | fgrep -q "\$SPECIES" && SPECIES_OPT="-O \$SPECIES" || SPECIES_OPT=''
 
-    # Run AFP, collect stderr to grab version numbers
-    amrfinderplus -n $contigs \$SPECIES_OPT -o amrfinderplus.tsv --threads ${task.cpus} 2>stderr.log
+    # Run AFP
+    amrfinderplus -n $contigs \$SPECIES_OPT -o amrfinderplus.tsv --threads ${task.cpus}
 
-    # Produce metadata.txt grepping program and database version from stderr
-    printf -- '--input_file_name ${contigs.name} ' >metadata.txt
-    sed -En 's/^Software version: (.*)\$/--analysis_software_version \\1/p;s/^Database version: (.*)\$/--reference_database_version \\1/p' stderr.log | sort -u | tr '\\n' ' ' >>metadata.txt
+    # Produce metadata.txt
+    DB_VER=`amrfinderplus -V | fgrep 'Database version:' | cut -d':' -f2`
+    printf -- '--input_file_name ${contigs.name} --analysis_software_version %s --reference_database_version %s' `amrfinderplus -v` \$DB_VER >metadata.txt
     """
 }
 
@@ -76,7 +76,7 @@ process resfinder {
 
     script:
     """
-    touch metadata.txt
+    touch metadata.txt # Leave empty as ResFinder writes all required metadata in its JSON output
     resfinder --acquired --point --disinfectant --species '$species' --ignore_missing_species -ifa $contigs -j resfinder.json -o . --kma_threads ${task.cpus}
     """
 }
@@ -95,7 +95,7 @@ process rgi {
     """
     run-rgi --input_sequence $contigs --output_file rgi --num_threads ${task.cpus}
     rm -rf localDB || true
-    printf -- '--input_file_name %s --analysis_software_version %s --reference_database_version %s' ${contigs.name} \$(rgi main --version) \$(rgi database --version) >metadata.txt
+    printf -- '--input_file_name ${contigs.name} --analysis_software_version %s --reference_database_version %s' `rgi main --version` `rgi database --version` >metadata.txt
     """
 }
 
