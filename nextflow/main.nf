@@ -51,10 +51,15 @@ process amrfinderplus {
 
     script:
     """
-    printf -- '--input_file_name ${contigs.name} ' >metadata.txt
-    [ -n '$species' ] && amrfinder --list_organisms /database 2>/dev/null | fgrep -q '$species' && SPECIES_OPT='-O $species' || SPECIES_OPT=''
+    # Set species to have AFP's required underscore instead of space then set SPECIES_OPT iff SPECIES is supported by AFP
+    SPECIES=`echo '$species' | sed -e 's/ /_/g'`
+    [ -n "\$SPECIES" ] && amrfinderplus --list_organisms 2>/dev/null | fgrep -q "\$SPECIES" && SPECIES_OPT="-O \$SPECIES" || SPECIES_OPT=''
+
+    # Run AFP, collect stderr to grab version numbers
     amrfinderplus -n $contigs \$SPECIES_OPT -o amrfinderplus.tsv --threads ${task.cpus} 2>stderr.log
-    # We grep the metadata (program and database version) from stderr
+
+    # Produce metadata.txt grepping program and database version from stderr
+    printf -- '--input_file_name ${contigs.name} ' >metadata.txt
     sed -En 's/^Software version: (.*)\$/--analysis_software_version \\1/p;s/^Database version: (.*)\$/--reference_database_version \\1/p' stderr.log | sort -u | tr '\\n' ' ' >>metadata.txt
     """
 }

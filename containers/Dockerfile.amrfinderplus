@@ -27,20 +27,23 @@ RUN mkdir /database && \
     amrfinder_update -d /database && \
     ln -srfT `realpath /database/latest` /database/latest
 
-# Install amrfinderplus wrapper script that already sets database option
+# AFP doesn't need -d argument when this envvar is set
+ENV AMRFINDER_DB /database/latest
+
+# AFP warns (probably harmless) that this should be set
+ENV CONDA_PREFIX /opt/conda
+
+# Install amrfinderplus wrapper script (no longer needed since ENV)
 # ----------------------------------------------------------------------
 
-RUN printf '#!/bin/sh\namrfinder -d /database/latest "$@"' \
+RUN printf '#!/bin/sh\nexec amrfinder "$@"' \
     >/usr/local/bin/amrfinderplus && \
     chmod +x /usr/local/bin/amrfinderplus
 
-# Set up workdir and default command
+# Default command
 #----------------------------------------------------------------------
 
-# Change to the mounted workdir as initial PWD
-WORKDIR /workdir
-
 # No ENTRYPOINT means that any binary on the PATH in the container can
-# be run.  Set CMD so that without arguments, user gets resfinder --help.
+# be run.  Set CMD so that without arguments, user gets AFP --help.
 CMD ["echo", "Usage: amrfinderplus -n FASTA -O SPECIES -o FILE [--threads N]"]
 
