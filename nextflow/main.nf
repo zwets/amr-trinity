@@ -53,14 +53,14 @@ process amrfinderplus {
     """
     # Set species to have AFP's required underscore instead of space then set SPECIES_OPT iff SPECIES is supported by AFP
     SPECIES=`echo '$species' | sed -e 's/ /_/g'`
-    [ -n "\$SPECIES" ] && amrfinderplus --list_organisms 2>/dev/null | fgrep -q "\$SPECIES" && SPECIES_OPT="-O \$SPECIES" || SPECIES_OPT=''
+    [ -n "\$SPECIES" ] && amrfinder --list_organisms 2>/dev/null | fgrep -q "\$SPECIES" && SPECIES_OPT="-O \$SPECIES" || SPECIES_OPT=''
 
     # Run AFP
-    amrfinderplus -n $contigs \$SPECIES_OPT -o amrfinderplus.tsv --threads ${task.cpus}
+    amrfinder -n $contigs \$SPECIES_OPT -o amrfinderplus.tsv --threads ${task.cpus}
 
     # Produce metadata.txt
-    DB_VER=`amrfinderplus -V | fgrep 'Database version:' | cut -d':' -f2`
-    printf -- '--input_file_name ${contigs.name} --analysis_software_version %s --reference_database_version %s' `amrfinderplus -v` \$DB_VER >metadata.txt
+    DB_VER=`amrfinder -V | fgrep 'Database version:' | cut -d':' -f2`
+    printf -- '--input_file_name ${contigs.name} --analysis_software_version %s --reference_database_version %s' `amrfinder -v` \$DB_VER >metadata.txt
     """
 }
 
@@ -93,8 +93,7 @@ process rgi {
 
     script:
     """
-    run-rgi --input_sequence $contigs --output_file rgi --num_threads ${task.cpus}
-    rm -rf localDB || true
+    rgi main -i $contigs -o rgi -n ${task.cpus} --clean
     printf -- '--input_file_name ${contigs.name} --analysis_software_version %s --reference_database_version %s' `rgi main --version` `rgi database --version` >metadata.txt
     """
 }
