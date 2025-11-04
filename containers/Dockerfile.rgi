@@ -21,6 +21,15 @@ RUN mkdir /database && cd /database && \
     rm -f card.tar.bz2 && \
     rgi load -i /database/card.json
 
+# Workaround for RGI using a stale baked-in database
+#----------------------------------------------------------------------
+
+# RGI ignores that we loaded a new database and reuses this stale one
+# on every run.  We clear it a recreate the correct database.
+RUN rm -f /opt/conda/lib/python*/site-packages/app/_db/*.* && \
+    printf '>dummy\nacgtacgtacgtacgt\n' >/tmp/dummy.fna && \
+    rgi main -i /tmp/dummy.fna -o /tmp/dummy 2>/dev/null
+
 # Set up workdir and default command
 #----------------------------------------------------------------------
 
