@@ -40,7 +40,10 @@ RUN mkdir -p /databases/amrfinderplus && \
     wget -cqO card.tar.bz2 'https://card.mcmaster.ca/latest/data' && \
     tar -xf card.tar.bz2 && \
     rm -f card.tar.bz2 && \
-    rgi load -i /databases/rgi/card.json
+    rgi load -i /databases/rgi/card.json && \
+    rm -f /opt/conda/lib/python*/site-packages/app/_db/*.* && \
+    printf '>dummy\nacgtacgtacgtacgt\n' >/tmp/dummy.fna && \
+    rgi main -i /tmp/dummy.fna -o /tmp/dummy 2>/dev/null
 
 # AFP and RF use these to find databases, RGI 'load' has put it in its executable directory
 ENV AMRFINDER_DB /databases/amrfinderplus/latest
