@@ -1,6 +1,4 @@
 rule get_resfinder_db:
-    # Can change this rule to work with the cache directive
-    # See https://snakemake.readthedocs.io/en/stable/executing/caching.html
     output:
         res_db = directory(os.path.join(config['db_dir'], "resfinder_db")),
         point_db = directory(os.path.join(config['db_dir'], "pointfinder_db")),

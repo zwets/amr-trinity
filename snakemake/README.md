@@ -48,7 +48,7 @@ If you want to run the workflow with different config settings
 
     snakemake --configfile ...
 
-The `--sdm conda` (or `--software-deployment-method conda` in full) and
-`--cores` arguments are mandatory.  Weirdly `snakemake`  has no way to use
-or set defaults for these.  At least `--cores` can be shortened to `-c`.
+The `--sdm conda` (or `--software-deployment-method conda` or `--use-conda`)
+and `--cores` arguments are mandatory.  Weirdly `snakemake`  has no way to
+default these.  At least `--cores` can be shortened to `-c`.
 

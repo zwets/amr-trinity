@@ -1,6 +1,4 @@
 rule get_amrfinder_db:
-    # Can change this rule to work with the cache directive
-    # See https://snakemake.readthedocs.io/en/stable/executing/caching.html
     output:
         directory(os.path.join(config['db_dir'], "amrfinderplus", "latest"))
     conda:

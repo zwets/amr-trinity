@@ -27,6 +27,6 @@ Once you have the sample sheet, invoke the workflow as above:
 
     ./main.nf --input path/to/isolates.tsv --output path/to/results
 
-By default only the aggregate hAMRonised results is written into `./results/`.
+By default the aggregate hAMRonised results are written into `./results/`.
 
 To run with different config settings see [nextflow.config](nextflow.config).

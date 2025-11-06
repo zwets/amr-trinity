@@ -28,22 +28,21 @@ in Nextflow.
 ### Snakemake Workflow
 
 The Snakemake workflow is a stripped-down version of the original hAMRonization
-workflow.  It uses the Conda releases of the tools, and automatically installs
+workflow.  It uses the _conda_ releases of the tools, and automatically installs
 their databases on the first run.
 
 See the [snakemake](snakemake) directory.
 
 ### Nextflow Workflow
 
-The [Nextflow implementation](nextflow) is more stable and uses the container
-releases of the tools (Podman/Docker/Singularity).  The containers come with
-databases built-in.
+The [Nextflow implementation](nextflow) is more stable and uses the _container_
+releases of the tools (Podman/Docker/Singularity).
 
 See the [nextflow](nextflow) directory.
 
 ### Containers
 
 The [containers](containers) directory has Dockerfiles to produce the containers.
-This is no longer needed now that all tools release up-to-date container images,
-but we keep them around for reference.
+This is no longer needed now that all tools release mostly up-to-date container
+images.
 
