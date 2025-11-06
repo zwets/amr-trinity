@@ -2,8 +2,6 @@
 
 _Run the "Big Three" AMR detection tools with unified output_
 
-**WORK IN PROGRESS**
-
 ### Background
 
 This repository provides two ways to run the "Big Three" AMR detection tools
@@ -23,27 +21,29 @@ three tools that have their own actively curated databases and algorithms.
  * [ResFinder](https://bitbucket.org/genomicepidemiology/resfinder)
  * [RGI/CARD](https://github.com/arpcard/rgi)
 
+We have two workflow implementations: in Snakemake (a scaled down version of
+[hAMRonization workflow](https://github.com/pha4ge/hAMRonization_workflow)) and
+in Nextflow.
+
 ### Snakemake Workflow
 
-The Snakemake workflow was directly taken from the hAMRonization workflow, then
-scaled down.  It pulls in the three tools and the hamronization tool through Conda.
+The Snakemake workflow is a stripped-down version of the original hAMRonization
+workflow.  It uses the Conda releases of the tools, and automatically installs
+their databases on the first run.
 
 See the [snakemake](snakemake) directory.
 
 ### Nextflow Workflow
 
-The [Nextflow implementation](nextflow) is a "simplest thing that could possibly
-work".  In contrast to the Snakemake workflow it uses _containers_.
+The [Nextflow implementation](nextflow) is more stable and uses the container
+releases of the tools (Podman/Docker/Singularity).  The containers come with
+databases built-in.
 
-A particularly convenient aspect of using containers is that we can include the
-database inside the container.
+See the [nextflow](nextflow) directory.
 
 ### Containers
 
-The [containers](containers) directory has Dockerfiles to produce the three
-containers.
-
-**TODO**
- - Containerise hAMRonization as well and/or make the containers do hAMRronization?
- - Push containers to Docker Hub, Quay, GHRC
+The [containers](containers) directory has Dockerfiles to produce the containers.
+This is no longer needed now that all tools release up-to-date container images,
+but we keep them around for reference.
 

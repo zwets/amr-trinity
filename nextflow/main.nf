@@ -1,17 +1,17 @@
 #!/usr/bin/env nextflow
 
-process summarize {
+process summarise {
     publishDir "${params.outdir}", mode: 'copy'
-    conda 'hamronization=1.1.9'
+    container 'ghcr.io/zwets/hamronization:1.1.10'
     cpus 1
 
     input:
     path inputs
 
     output:
-    path('report.tsv'), emit: tsv
-    path('report.json'), emit: json
-    path('report.html'), emit: html
+    path('report.tsv')
+    path('report.json')
+    path('report.html')
 
     script:
     """
@@ -23,7 +23,7 @@ process summarize {
 
 process hamronize {
     publishDir "${params.outdir}", mode: 'copy'
-    conda 'hamronization=1.1.9'
+    container 'ghcr.io/zwets/hamronization:1.1.10'
     cpus 1
 
     input:
@@ -40,7 +40,7 @@ process hamronize {
 }
 
 process amrfinderplus {
-    container 'localhost/amrfinderplus:4.0.23'
+    container 'docker.io/ncbi/amr:4.0.23-2025-07-16.1'
     cpus 4
 
     input:
@@ -65,7 +65,8 @@ process amrfinderplus {
 }
 
 process resfinder {
-    container 'localhost/resfinder:4.7.2'
+    container 'docker.io/genomicepidemiology/resfinder:4.7.2'
+    containerOptions '--entrypoint ""'
     cpus 2
 
     input:
@@ -77,12 +78,12 @@ process resfinder {
     script:
     """
     touch metadata.txt # Leave empty as ResFinder writes all required metadata in its JSON output
-    resfinder --acquired --point --disinfectant --species '$species' --ignore_missing_species -ifa $contigs -j resfinder.json -o . --kma_threads ${task.cpus}
+    python -m resfinder --acquired --point --disinfectant --species '$species' --ignore_missing_species -ifa $contigs -j resfinder.json -o . --kma_threads ${task.cpus}
     """
 }
 
 process rgi {
-    container 'localhost/rgi:6.0.5'
+    container 'quay.io/biocontainers/rgi:6.0.5--pyh05cac1d_0'
     cpus 8
 
     input:
@@ -105,11 +106,11 @@ workflow {
         | map { row -> tuple(row.id, row.species, file(row.assembly)) }
         | (amrfinderplus & resfinder & rgi)
 
-    // Pull the tool outputs into a single channel, harmonise each, collect all harmoniseds, and summarize overall
+    // Pull the tool outputs into a single channel, harmonise each, collect all harmoniseds, and summarise overall
     Channel.of().mix(amrfinderplus.out, resfinder.out, rgi.out)
         | hamronize 
         | collect // into array
-        | summarize
+        | summarise
 
 }
 
