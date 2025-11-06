@@ -37,7 +37,7 @@ This is a TSV with a header row that defines at least these three columns:
 There may be other columns, and they can be in any order.
 See [test/mini/isolates.tsv](test/mini/isolates.tsv) for reference.
 
-Once you have the sample sheet, invoke the workflow as above:
+Once you have the sample sheet, invoke the workflow like above:
 
     snakemake --cores all --sdm conda -C samples=path/to/isolates.tsv
 
@@ -48,4 +48,7 @@ If you want to run the workflow with different config settings
 
     snakemake --configfile ...
 
-The `--cores` and `--sdm conda` or `--use-conda` are always needed.
+The `--sdm conda` (or `--software-deployment-method conda` in full) and
+`--cores` arguments are mandatory.  Weirdly `snakemake`  has no way to use
+or set defaults for these.  At least `--cores` can be shortened to `-c`.
+
