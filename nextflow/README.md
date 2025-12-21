@@ -11,7 +11,12 @@ In the directory where you read this README.md, run smoke test
 
     nextflow main.nf
 
-If all went well you will find the results in the `results` directory.
+or simply
+
+    ./main.nf
+
+These run the workflow on data from `test/mini`, and write outputs to
+directory `./results`, taking configuration from `./nextflow.config`.
 
 
 ## Usage
@@ -23,10 +28,12 @@ The workflow requires that your assemblies are listed in a "sample sheet"
  * `species`: name of the species of the isolate, may be empty or `Unknown`
  * `assembly`: path to the FASTA file with the assembled contigs
 
-Once you have the sample sheet, invoke the workflow as above:
+To run the workflow, specify the path to the sample sheet as input
 
-    ./main.nf --input path/to/isolates.tsv --output path/to/results
+    ./main.nf --input path/to/isolates.tsv
 
-By default the aggregate hAMRonised results are written into `./results/`.
+You will also want to override the output directory (default `./results`)
+
+    ./main.nf --input path/to/isolates.tsv --output path/to/resultdir
 
 To run with different config settings see [nextflow.config](nextflow.config).
