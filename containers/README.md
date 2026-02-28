@@ -1,7 +1,11 @@
 # AMR Trinity - Containers
 
 This directory has containerfiles to create Podman/Docker containers
-for the three AMR detection tools.
+for the three AMR detection tools.  The containers come with their
+database included.
+
+A Dockerfile for hAMRonization is included in the
+[hAMRonization repo](https://github.com/pha4ge/hAMRonization).
 
 > **No longer needed!**
 >
@@ -11,7 +15,7 @@ for the three AMR detection tools.
 >  * AMRFinderPlus: <https://docker.io/ncbi/amr>
 >  * ResFinder: <https://docker.io/genomicepidemiology/resfinder>
 >  * RGI: <https://quay.io/biocontainers/rgi>
->  * hARMonization: <https://docker.io/finlaymaguire/hamronization> or <https://ghcr.io/zwets/hamronization> 
+>  * hAMRonization: <https://docker.io/finlaymaguire/hamronization> or <https://ghcr.io/zwets/hamronization>
 
 
 ## Build

@@ -25,8 +25,8 @@ RUN mkdir /database && cd /database && \
 #----------------------------------------------------------------------
 
 # RGI ignores that we loaded a new database and reuses this stale one
-# on every run.  We clear it a recreate the correct database.
-RUN rm -f /opt/conda/lib/python*/site-packages/app/_db/*.* && \
+# on every run.  We clear it and make it recreate the correct database.
+RUN rm -rf /opt/conda/lib/python*/site-packages/app/_db/* && \
     printf '>dummy\nacgtacgtacgtacgt\n' >/tmp/dummy.fna && \
     rgi main -i /tmp/dummy.fna -o /tmp/dummy 2>/dev/null
 

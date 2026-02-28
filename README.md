@@ -11,8 +11,8 @@ The project builds on [hAMRonization](https://github.com/pha4ge/hAMRonization),
 which maintains a collection of converters to harmonise AMR tool output formats.
 
 [hAMRonization workflow](https://github.com/pha4ge/hAMRonization_workflow) was
-a proof of concept test-case workflow that ran all (18) hAMRonization-supported
-tools in one go.
+a proof of concept workflow that ran all (18) hAMRonization-supported tools in
+one go.
 
 **AMR Trinity** scales down the hAMRonization workflow to the "Big Three", the
 three tools that have their own actively curated databases and algorithms.
@@ -21,24 +21,19 @@ three tools that have their own actively curated databases and algorithms.
  * [ResFinder](https://bitbucket.org/genomicepidemiology/resfinder)
  * [RGI/CARD](https://github.com/arpcard/rgi)
 
-We have two workflow implementations: in Snakemake (a scaled down version of
-[hAMRonization workflow](https://github.com/pha4ge/hAMRonization_workflow)) and
-in Nextflow.
+We have two workflow implementations: in Snakemake and Nextflow.
 
 ### Snakemake Workflow
 
 The Snakemake workflow is a stripped-down version of the original hAMRonization
 workflow.  It uses the _conda_ releases of the tools, and automatically installs
-their databases on the first run.
-
-See the [snakemake](snakemake) directory.
+their databases on the first run.  See the [snakemake](snakemake) directory.
 
 ### Nextflow Workflow
 
 The [Nextflow implementation](nextflow) is more stable and uses the _container_
-releases of the tools (Podman/Docker/Singularity).
-
-See the [nextflow](nextflow) directory.
+releases of the tools (Podman/Docker/Singularity).  See the [nextflow](nextflow)
+directory.
 
 ### Containers
 

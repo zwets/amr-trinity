@@ -9,7 +9,7 @@ in [hAMRonization Workflow](https://github.com/pha4ge/hAMRonization_workflow.git
 
 ## Installation
 
-Create Conda environment *snakemake*
+Create Conda environment *snakemake* (if you don't have any yet)
 
     conda env create -n snakemake -f workflow/envs/snakemake.yaml
 
@@ -17,7 +17,7 @@ Activate the environment
 
     conda activate snakemake
 
-Run the smoke test on the NDM mini sample (this will take a while, as tools
+Run a smoke test on the NDM mini sample (this will take a while, as tools
 and databases are getting installed)
 
     snakemake --cores all --sdm conda -C samples=test/mini/isolates.tsv

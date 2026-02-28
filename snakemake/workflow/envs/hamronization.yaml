@@ -5,9 +5,8 @@ channels:
   # Block default channels to comply with Anaconda licensing
   - nodefaults
 dependencies:
-  - hamronization=1.1.9
-# For development
-#  - python>=3.9
-#  - pip
-#  - pip:
-#     - git+https://github.com/zwets/hamronization
+#  - hamronization=1.2.0
+# For development (until 1.2.0 hits conda-forge)
+  - python=3.13.12
+  - pip:
+     - git+https://github.com/zwets/hamronization
