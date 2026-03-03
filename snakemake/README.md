@@ -41,7 +41,8 @@ Once you have the sample sheet, invoke the workflow like above:
 
     snakemake --cores all --sdm conda -C samples=path/to/isolates.tsv
 
-By default the results for each `$id` are written into `./results/$id/`.
+By default the results for each `$id` are written into `./results/$id/`,
+and the hamronized summaries are in `./results/results.{json,tsv,html}`.
 
 If you want to run the workflow with different config settings
 (see [config/config.yaml](config/config.yaml)), you can override these with

@@ -3,15 +3,15 @@ rule get_resfinder_db:
         res_db = directory(os.path.join(config['db_dir'], "resfinder_db")),
         point_db = directory(os.path.join(config['db_dir'], "pointfinder_db")),
         disinf_db = directory(os.path.join(config['db_dir'], "disinfinder_db"))
-    log:
-        "logs/resfinder_db.log"
-    conda:
-        "../envs/resfinder.yaml"
     params:
         # This picks the latest version of the three databases (tools will report version)
         res_ver = 'master',
         point_ver = 'master',
         disinf_ver = 'master'
+    log:
+        "logs/resfinder_db.log"
+    conda:
+        "../envs/resfinder.yaml"
     shell:
         """
         {{
@@ -27,6 +27,7 @@ rule get_resfinder_db:
         """
 
 rule run_resfinder:
+    message: "Running ResFinder on {wildcards.sample}"
     input:
         assembly = get_assembly,
         res_db = os.path.join(config['db_dir'], 'resfinder_db'),
@@ -35,15 +36,16 @@ rule run_resfinder:
     output:
         dir = directory("results/{sample}/resfinder"),
         report = "results/{sample}/resfinder/data_resfinder.json"
-    message: "Running ResFinder on {wildcards.sample}"
-    log:
-        "logs/resfinder_{sample}.log"
-    conda:
-        "../envs/resfinder.yaml"
-    threads:
-        config['threads']['resfinder']
     params:
         species = branch(get_species, then=get_species, otherwise="Unknown"),
+    log:
+        "logs/resfinder_{sample}.log"
+    benchmark:
+        "benchmarks/resfinder_{sample}.tsv"
+    conda:
+        "../envs/resfinder.yaml"
+    threads: 1	# we process assemblies so ResFinder uses single-threaded blast, not KMA (--kma_threads is not used)
+    resources: runtime = "2m", mem = "500MB"
     shell:
         """
         run_resfinder.py --acquired --point --disinfectant --species '{params.species}' --ignore_missing_species \

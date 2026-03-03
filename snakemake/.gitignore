@@ -1,4 +1,5 @@
 /databases
 /logs
+/benchmarks
 /test/*
 !/test/mini

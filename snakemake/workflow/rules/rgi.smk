@@ -14,34 +14,37 @@ rule get_rgi_db:
         """
 
 rule run_rgi:
+    message: "Running RGI on {wildcards.sample}"
     input:
         contigs = get_assembly,
         card_db = os.path.join(config['db_dir'], "card", "card.json")
     output:
         report = "results/{sample}/rgi/rgi.txt",
         metadata = "results/{sample}/rgi/metadata.txt"
-    message: "Running RGI on {wildcards.sample}"
-    log:
-        "logs/rgi_{sample}.log"
-    conda:
-        "../envs/rgi.yaml"
-    threads:
-        config['threads']['rgi']
     params:
         out_dir = "results/{sample}/rgi"
+    log:
+        "logs/rgi_{sample}.log"
+    benchmark:
+        "benchmarks/rgi_{sample}.tsv"
+    conda:
+        "../envs/rgi.yaml"
+    threads: 8
+    resources: runtime = "5m", mem = "1GB"
     shell:
         """{{
-        # Inconveniently we need to cd to the output directory because 'rgi load' writes
-        # its database where it runs, and we don't want two jobs writing in one location.
-        # Before we change directory we need to make all file paths absolute.
+        # We are forced to change directory because 'rgi load' clumsily writes its
+        # database in the PWD, where it will bork and be borked by any parallel job.
+        # The output directory is safe because it is unique to the job.  But we can
+        # only go there if we first make the paths we need absolute.
         FNA="$(realpath '{input.contigs}')"
         CARD="$(realpath '{input.card_db}')"
         META="$(realpath '{output.metadata}')"
         cd {params.out_dir}
         rgi load -i "$CARD" --local
         rgi main --local --clean --input_sequence "$FNA" --output_file rgi --num_threads {threads}
-	# Now remove the localDB (why doesn't it put this in /tmp?)
-	rm -rf localDB || true
+        # Now remove the localDB (why doesn't it put this in /tmp?)
+        rm -rf localDB || true
         echo "--analysis_software_version $(rgi main --version) --reference_database_version $(rgi database --version)" >"$META"
         }} >{log} 2>&1
         """
@@ -53,6 +56,8 @@ rule hamronize_rgi:
         metadata = "results/{sample}/rgi/metadata.txt"
     output:
         "results/{sample}/rgi/hamronized_report.tsv"
+    log:
+        "logs/resfinder_{sample}_hamronize.log"
     conda:
         "../envs/hamronization.yaml"
     shell:

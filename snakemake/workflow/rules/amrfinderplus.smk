@@ -1,12 +1,12 @@
 rule get_amrfinder_db:
     output:
         directory(os.path.join(config['db_dir'], "amrfinderplus", "latest"))
-    conda:
-        "../envs/amrfinderplus.yaml"
     params:
         db_dir = os.path.join(config['db_dir'], "amrfinderplus")
     log:
         "logs/amrfinderplus_db.log"
+    conda:
+        "../envs/amrfinderplus.yaml"
     shell:
         """
         amrfinder_update -d '{params.db_dir}' 2>{log}
@@ -15,21 +15,23 @@ rule get_amrfinder_db:
         """
 
 rule run_amrfinderplus:
+    message: "Running AMRFinderPlus on {wildcards.sample}"
     input:
         contigs = get_assembly,
         db_dir = os.path.join(config['db_dir'], "amrfinderplus", "latest")
     output:
         report = "results/{sample}/amrfinderplus/report.tsv",
         metadata = "results/{sample}/amrfinderplus/metadata.txt"
-    message: "Running AMRFinderPlus on {wildcards.sample}"
-    log:
-        "logs/amrfinderplus_{sample}.log"
-    conda:
-        "../envs/amrfinderplus.yaml"
-    threads:
-        config['threads']['amrfinderplus']
     params:
         species = lambda w: get_species(w).replace(' ','_')
+    log:
+        "logs/amrfinderplus_{sample}.log"
+    benchmark:
+        "benchmarks/amrfinderplus_{sample}.tsv"
+    conda:
+        "../envs/amrfinderplus.yaml"
+    threads: 4
+    resources: runtime = "2m", mem = "500MB" 
     shell:
         """
         # Set SPECIES_OPT if and only if param.species is supported by AFP

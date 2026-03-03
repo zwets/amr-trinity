@@ -8,9 +8,3 @@ samples: "you-need-to-set-the-samples-variable-to-the-path-to-your-isolates.tsv"
 # Path for storing the databases
 db_dir: "databases"
 
-# Default max threads for each of the tools
-threads:
-  rgi: 4
-  amrfinderplus: 4
-  resfinder: 4
-
