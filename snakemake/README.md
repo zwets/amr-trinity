@@ -17,7 +17,7 @@ Activate the environment
 
     conda activate snakemake
 
-Run a smoke test on the NDM mini sample (this will take a while, as tools
+Run a smoke test on the NDM mini sample (this may take a while, as tools
 and databases are getting installed)
 
     snakemake --cores all --sdm conda -C samples=test/mini/isolates.tsv
@@ -39,17 +39,21 @@ See [test/mini/isolates.tsv](test/mini/isolates.tsv) for reference.
 
 Once you have the sample sheet, invoke the workflow like above:
 
-    snakemake --cores all --sdm conda -C samples=path/to/isolates.tsv
+    snakemake -C samples=path/to/isolates.tsv
 
 By default the results for each `$id` are written into `./results/$id/`,
 and the hamronized summaries are in `./results/results.{json,tsv,html}`.
 
-If you want to run the workflow with different config settings
-(see [config/config.yaml](config/config.yaml)), you can override these with
+We omit the mandatory `--cores` and `--sdm conda` arguments here, as these
+are being set in the [default profile](profiles/default/config.yaml).  You
+can add your own default parameters there, or run an alternative profile:
+
+    snakemake --workflow-profile ...
+
+The workflow itself is configured in the [default config](config/config.yaml),
+which again you can edit, or override on the command-line:
 
     snakemake --configfile ...
 
-The `--sdm conda` (or `--software-deployment-method conda` or `--use-conda`)
-and `--cores` arguments are mandatory.  Weirdly `snakemake`  has no way to
-default these.  At least `--cores` can be shortened to `-c`.
-
+Refer to the [Snakemake docs](https://snakemake.readthedocs.io/en/stable/)
+for all the excruciating detail.

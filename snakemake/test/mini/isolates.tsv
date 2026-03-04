@@ -6,7 +6,7 @@
 #
 # Every row must have a (possibly empty) value in every column.  The 'id'
 # column must have unique non-empty values.  The 'assembly' column must
-# have paths to FASTA files.
+# have paths to FASTA files relative to the working directory.
 
 id	species	assembly
 NDM	Unknown	test/mini/test_contig.fna
