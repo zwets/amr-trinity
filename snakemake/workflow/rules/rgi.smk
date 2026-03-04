@@ -15,12 +15,12 @@ rule get_rgi_db:
 
 rule run_rgi:
     message: "Running RGI on {wildcards.sample}"
-    input:
-        contigs = get_assembly,
-        card_db = os.path.join(config['db_dir'], "card", "card.json")
     output:
         report = "results/{sample}/rgi/rgi.txt",
         metadata = "results/{sample}/rgi/metadata.txt"
+    input:
+        contigs = get_assembly,
+        card_db = os.path.join(config['db_dir'], "card", "card.json")
     params:
         out_dir = "results/{sample}/rgi"
     log:
@@ -50,12 +50,12 @@ rule run_rgi:
         """
 
 rule hamronize_rgi:
+    output:
+        "results/{sample}/rgi/hamronized_report.tsv"
     input:
         contigs = get_assembly,
         report = "results/{sample}/rgi/rgi.txt",
         metadata = "results/{sample}/rgi/metadata.txt"
-    output:
-        "results/{sample}/rgi/hamronized_report.tsv"
     log:
         "logs/resfinder_{sample}_hamronize.log"
     conda:

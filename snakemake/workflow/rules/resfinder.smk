@@ -28,14 +28,14 @@ rule get_resfinder_db:
 
 rule run_resfinder:
     message: "Running ResFinder on {wildcards.sample}"
+    output:
+        dir = directory("results/{sample}/resfinder"),
+        report = "results/{sample}/resfinder/data_resfinder.json"
     input:
         assembly = get_assembly,
         res_db = os.path.join(config['db_dir'], 'resfinder_db'),
         point_db = os.path.join(config['db_dir'], 'pointfinder_db'),
         disinf_db = os.path.join(config['db_dir'], 'disinfinder_db')
-    output:
-        dir = directory("results/{sample}/resfinder"),
-        report = "results/{sample}/resfinder/data_resfinder.json"
     params:
         species = branch(get_species, then=get_species, otherwise="Unknown"),
     log:
@@ -44,7 +44,7 @@ rule run_resfinder:
         "benchmarks/resfinder_{sample}.tsv"
     conda:
         "../envs/resfinder.yaml"
-    threads: 1	# we process assemblies so ResFinder uses single-threaded blast, not KMA (--kma_threads is not used)
+    threads: 1  # we process assemblies so ResFinder uses single-threaded blast, not KMA (--kma_threads is not used)
     resources: runtime = "2m", mem = "500MB"
     shell:
         """
@@ -54,10 +54,10 @@ rule run_resfinder:
         """
 
 rule hamronize_resfinder:
-    input:
-        "results/{sample}/resfinder/data_resfinder.json",
     output:
         "results/{sample}/resfinder/hamronized_report.tsv"
+    input:
+        "results/{sample}/resfinder/data_resfinder.json",
     log:
         "logs/resfinder_{sample}_hamronize.log"
     conda:

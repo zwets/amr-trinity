@@ -42,6 +42,9 @@ sample_ids = samples[samples.assembly != ''].index
 get_species = lambda w: samples.loc[w.sample].species
 get_assembly = lambda w: samples.loc[w.sample].assembly
 
+# Convenience for iterating across tools outputs in summarize rules
+tools = ['amrfinderplus', 'resfinder', 'rgi']
+
 # Target rules ---
 
 rule all:
@@ -49,13 +52,12 @@ rule all:
     input:
         "results/report.tsv",
         "results/report.json",
-        "results/report.html"
+        "results/report.html",
+        "benchmarks/benchmarks.tsv"
 
 rule summarize_all:
     output:
-        tsv = "results/report.tsv",
-        json = "results/report.json",
-        html = "results/report.html"
+        multiext("results/report", tsv=".tsv", json=".json", html=".html")
     input:
         expand("results/{sample}/{sample}_hamronized.tsv", sample=sample_ids),
     conda:
@@ -69,13 +71,9 @@ rule summarize_all:
 
 rule summarize_sample:
     output:
-        tsv = "results/{sample}/{sample}_hamronized.tsv",
-        json = "results/{sample}/{sample}_hamronized.json",
-        html = "results/{sample}/{sample}_hamronized.html"
+        multiext("results/{samples}/{sample}_hamronized", tsv=".tsv", json=".json", html=".html")
     input:
-        expand("results/{sample}/amrfinderplus/hamronized_report.tsv", sample=sample_ids),
-        expand("results/{sample}/resfinder/hamronized_report.tsv", sample=sample_ids),
-        expand("results/{sample}/rgi/hamronized_report.tsv", sample=sample_ids)
+        expand("results/{sample}/{tool}/hamronized_report.tsv", sample=sample_ids, tool=tools),
     conda:
         "envs/hamronization.yaml"
     shell:
@@ -83,6 +81,17 @@ rule summarize_sample:
         hamronize summarize -t tsv -o {output.tsv} {input}
         hamronize summarize -t json -o {output.json} {input}
         hamronize summarize -t interactive -o {output.html} {input}
+        """
+
+rule summarize_benchmarks:
+    output:
+        "benchmarks/benchmarks.tsv"
+    input:
+        expand("benchmarks/{tool}_{sample}.tsv", tool=tools, sample=sample_ids),
+    shell:
+        """
+        for F in {input}; do sed -e "s/^/$(basename $F .tsv)\\t/" $F; done |
+        sed -n '1p;2~2p' > {output}
         """
 
 include: "rules/amrfinderplus.smk"

@@ -16,12 +16,12 @@ rule get_amrfinder_db:
 
 rule run_amrfinderplus:
     message: "Running AMRFinderPlus on {wildcards.sample}"
-    input:
-        contigs = get_assembly,
-        db_dir = os.path.join(config['db_dir'], "amrfinderplus", "latest")
     output:
         report = "results/{sample}/amrfinderplus/report.tsv",
         metadata = "results/{sample}/amrfinderplus/metadata.txt"
+    input:
+        contigs = get_assembly,
+        db_dir = os.path.join(config['db_dir'], "amrfinderplus", "latest")
     params:
         species = lambda w: get_species(w).replace(' ','_')
     log:
@@ -41,12 +41,12 @@ rule run_amrfinderplus:
         """
 
 rule hamronize_amrfinderplus:
+    output:
+        "results/{sample}/amrfinderplus/hamronized_report.tsv"
     input:
         contigs = get_assembly,
         report = "results/{sample}/amrfinderplus/report.tsv",
         metadata = "results/{sample}/amrfinderplus/metadata.txt"
-    output:
-        "results/{sample}/amrfinderplus/hamronized_report.tsv"
     log:
         "logs/amrfinderplus_{sample}_hamronize.log"
     conda:
