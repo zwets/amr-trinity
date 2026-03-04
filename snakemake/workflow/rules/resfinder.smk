@@ -1,4 +1,5 @@
 rule get_resfinder_db:
+    localrule: True
     output:
         res_db = directory(os.path.join(config['db_dir'], "resfinder_db")),
         point_db = directory(os.path.join(config['db_dir'], "pointfinder_db")),
@@ -54,6 +55,7 @@ rule run_resfinder:
         """
 
 rule hamronize_resfinder:
+    localrule: True
     output:
         "results/{sample}/resfinder/hamronized_report.tsv"
     input:

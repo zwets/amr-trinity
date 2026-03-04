@@ -1,4 +1,5 @@
 rule get_amrfinder_db:
+    localrule: True
     output:
         directory(os.path.join(config['db_dir'], "amrfinderplus", "latest"))
     params:
@@ -41,6 +42,7 @@ rule run_amrfinderplus:
         """
 
 rule hamronize_amrfinderplus:
+    localrule: True
     output:
         "results/{sample}/amrfinderplus/hamronized_report.tsv"
     input:

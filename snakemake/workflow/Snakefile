@@ -49,6 +49,7 @@ tools = ['amrfinderplus', 'resfinder', 'rgi']
 
 rule all:
     default_target: True
+    localrule: True
     input:
         "results/report.tsv",
         "results/report.json",
@@ -56,10 +57,11 @@ rule all:
         "benchmarks/benchmarks.tsv"
 
 rule summarize_all:
+    localrule: True
     output:
         multiext("results/report", tsv=".tsv", json=".json", html=".html")
     input:
-        expand("results/{sample}/{sample}_hamronized.tsv", sample=sample_ids),
+        expand("results/{sample}/{sample}.tsv", sample=sample_ids),
     conda:
         "envs/hamronization.yaml"
     shell:
@@ -70,10 +72,11 @@ rule summarize_all:
         """
 
 rule summarize_sample:
+    localrule: True
     output:
-        multiext("results/{samples}/{sample}_hamronized", tsv=".tsv", json=".json", html=".html")
+        multiext("results/{sample}/{sample}", tsv=".tsv", json=".json", html=".html")
     input:
-        expand("results/{sample}/{tool}/hamronized_report.tsv", sample=sample_ids, tool=tools),
+        expand("results/{{sample}}/{tool}/hamronized_report.tsv", tool=tools)
     conda:
         "envs/hamronization.yaml"
     shell:
@@ -84,6 +87,7 @@ rule summarize_sample:
         """
 
 rule summarize_benchmarks:
+    localrule: True
     output:
         "benchmarks/benchmarks.tsv"
     input:

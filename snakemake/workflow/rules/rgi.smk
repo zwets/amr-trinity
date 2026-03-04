@@ -1,4 +1,5 @@
 rule get_rgi_db:
+    localrule: True
     output:
         os.path.join(config['db_dir'], "card", "card.json")
     params:
@@ -50,6 +51,7 @@ rule run_rgi:
         """
 
 rule hamronize_rgi:
+    localrule: True
     output:
         "results/{sample}/rgi/hamronized_report.tsv"
     input:
