@@ -38,6 +38,6 @@ directory.
 ### Containers
 
 The [containers](containers) directory has Dockerfiles to produce the containers.
-This is no longer needed now that all tools release mostly up-to-date container
-images.
-
+This is no longer needed now that all tools release (mostly) up-to-date container
+images, but the Dockerfile may prove useful if you want full control over tool
+and database versions.

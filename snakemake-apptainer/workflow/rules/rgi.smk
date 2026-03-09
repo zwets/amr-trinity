@@ -64,5 +64,5 @@ rule hamronize_rgi:
         "docker://ghcr.io/zwets/hamronization:1.2.0"
     shell:
         """
-        hamronize rgi $(cat {input.metadata}) --input_file_name {input.contigs} {input.report} > {output}
+        hamronize rgi $(cat {input.metadata}) --input_file_name {input.contigs} {input.report} >{output} 2>{log}
         """

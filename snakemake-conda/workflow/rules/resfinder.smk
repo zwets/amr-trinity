@@ -49,9 +49,9 @@ rule run_resfinder:
     resources: runtime = "2m", mem = "500MB"
     shell:
         """
-        run_resfinder.py --acquired --point --disinfectant --species '{params.species}' --ignore_missing_species \
-            --kma_threads {threads} -db_res '{input.res_db}' -db_point '{input.point_db}' -db_disinf '{input.disinf_db}' \
-            -ifa '{input.assembly}' -j {output.report} -o {output.dir} >{log} 2>&1
+        python -m resfinder --acquired --point --disinfectant --species '{params.species}' --ignore_missing_species \
+            -db_res '{input.res_db}' -db_point '{input.point_db}' -db_disinf '{input.disinf_db}' \
+            --kma_threads {threads} -ifa '{input.assembly}' -j {output.report} -o {output.dir} >{log} 2>&1
         """
 
 rule hamronize_resfinder:

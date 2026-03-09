@@ -14,7 +14,7 @@ rule run_amrfinderplus:
     container:
         "docker://docker.io/ncbi/amr:4.0.23-2025-07-16.1"
     threads: 4
-    resources: runtime = "2m", mem = "2500MB" 
+    resources: runtime = "2m", mem = "500MB"
     shell:
         """
         # Set SPECIES_OPT if and only if param.species is supported by AFP
