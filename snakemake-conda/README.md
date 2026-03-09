@@ -1,4 +1,4 @@
-# AMR Trinity - Snakemake workflow
+# AMR Trinity - Snakemake with Conda
 
 This workflow is a scaled down and simplified version of the Snakemake workflow
 in [hAMRonization Workflow](https://github.com/pha4ge/hAMRonization_workflow.git).
@@ -45,8 +45,10 @@ By default the results for each `$id` are written into `./results/$id/`,
 and the hamronized summaries are in `./results/results.{json,tsv,html}`.
 
 We omit the mandatory `--cores` and `--sdm conda` arguments here, as these
-are being set in the [default profile](profiles/default/config.yaml).  You
-can add your own default parameters there, or run an alternative profile:
+are being set in the [default profile](profiles/default/config.yaml).
+
+You can add your own defaults there, or run an alternative profile (but
+notice [this Snakemake bug](https://github.com/snakemake/snakemake/issues/3994)).
 
     snakemake --workflow-profile ...
 

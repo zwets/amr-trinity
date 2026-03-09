@@ -1,3 +1,4 @@
+.snakemake
 /databases
 /logs
 /benchmarks

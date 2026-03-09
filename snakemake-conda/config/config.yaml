@@ -1,0 +1,10 @@
+# Default configuration for running the AMR Trinity workflow
+
+# We set a non-existing path to the sample sheet so the user sees a semi-sensible
+# error if they don't override the samples variable either here or in their own
+# configfile (--configfile), or using -C samples=... on the command-line.
+samples: "you-need-to-set-the-samples-variable-to-the-path-to-your-isolates.tsv"
+
+# Path for storing the databases
+db_dir: "databases"
+

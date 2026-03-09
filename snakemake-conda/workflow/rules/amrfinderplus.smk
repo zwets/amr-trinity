@@ -32,7 +32,7 @@ rule run_amrfinderplus:
     conda:
         "../envs/amrfinderplus.yaml"
     threads: 4
-    resources: runtime = "2m", mem = "500MB" 
+    resources: runtime = "2m", mem = "500MB"
     shell:
         """
         # Set SPECIES_OPT if and only if param.species is supported by AFP

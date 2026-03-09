@@ -1,0 +1,7 @@
+.cache
+.snakemake
+/databases
+/logs
+/benchmarks
+/test/*
+!/test/mini

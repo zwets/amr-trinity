@@ -1,0 +1,12 @@
+# This file specifies the list of inputs for an AMR Trinity workflow run.
+#
+# The first line (after comment and empty lines) must have column headings,
+# and must define at least the columns id, species and assembly.  Columns
+# can be in any order.
+#
+# Every row must have a (possibly empty) value in every column.  The 'id'
+# column must have unique non-empty values.  The 'assembly' column must
+# have paths to FASTA files relative to the working directory.
+
+id	species	assembly
+NDM	Unknown	test/mini/test_contig.fna
