@@ -1,6 +1,4 @@
 process rgi {
-    container 'quay.io/biocontainers/rgi:6.0.5--pyh05cac1d_0'
-    cpus 8
 
     input:
     tuple val(id), val(species), path(contigs)

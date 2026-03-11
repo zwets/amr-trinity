@@ -1,6 +1,7 @@
 # AMR Trinity - Nextflow workflow
 
-This is the "AMR Trinity" workflow implemented in Nextflow.
+This is the "AMR Trinity" workflow implemented in Nextflow, with
+profiles to run with Apptainer (Singularity), Podman or Docker.
 
 
 ## Installation
@@ -9,20 +10,23 @@ Install Nextflow as documented on [their site](https://www.nextflow.io/docs/late
 
 In the directory where you read this README.md, run smoke test
 
-    nextflow main.nf
+    nextflow main.nf                   # standard profile = podman
+    nextflow -profile docker main.nf   # pick your profile
 
 or simply
 
     ./main.nf
+    ./main.nf -profile apptainer
 
-These run the workflow on data from `test/mini`, and write outputs to
-directory `./results`, taking configuration from `./nextflow.config`.
+These run the workflow on data from `test/mini` and write outputs to
+directories `./results` and `./benchmark`, taking configuration from
+`./nextflow.config`.
 
 
 ## Usage
 
 The workflow requires that your assemblies are listed in a "sample sheet"
-(same as for the Snakemake workflow), a TSV with at least:
+(same as for the Snakemake workflow), a TSV with at least these columns:
 
  * `id`: the identifier by which the workflow should refer to the isolate
  * `species`: name of the species of the isolate, may be empty or `Unknown`

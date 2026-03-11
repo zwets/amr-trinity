@@ -1,6 +1,4 @@
 process amrfinderplus {
-    container 'docker.io/ncbi/amr:4.0.23-2025-07-16.1'
-    cpus 4
 
     input:
     tuple val(id), val(species), path(contigs)

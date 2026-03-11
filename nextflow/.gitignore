@@ -3,6 +3,7 @@
 /test/*
 !/test/mini
 /results
+/benchmark
 /nxf.log
 /nxf.log.*
 /nxf.work

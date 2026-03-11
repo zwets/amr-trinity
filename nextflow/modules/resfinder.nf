@@ -1,7 +1,4 @@
 process resfinder {
-    container 'docker.io/genomicepidemiology/resfinder:4.7.2'
-    containerOptions '--entrypoint ""'
-    cpus 2
 
     input:
     tuple val(id), val(species), path(contigs)

@@ -7,8 +7,6 @@ include { rgi } from './modules/rgi.nf'
 // Final summary of the three tools across all isolates
 process summarise {
     publishDir "${params.outdir}", mode: 'copy'
-    container 'ghcr.io/zwets/hamronization:latest'
-    cpus 1
 
     input:
     path inputs
@@ -29,8 +27,6 @@ process summarise {
 // Harmonizes the per tool per sample output
 process hamronize {
     publishDir "${params.outdir}", mode: 'copy'
-    container 'ghcr.io/zwets/hamronization:latest'
-    cpus 1
 
     input:
     tuple val(id), val(tool), path(metadata), path(results)
