@@ -10,17 +10,20 @@ Install Nextflow as documented on [their site](https://www.nextflow.io/docs/late
 
 In the directory where you read this README.md, run smoke test
 
-    nextflow main.nf                   # standard profile = podman
-    nextflow -profile docker main.nf   # pick your profile
+    # Pick your profile: apptainer, docker, podman, singularity
+    nextflow main.nf -profile apptainer
 
 or simply
 
-    ./main.nf
     ./main.nf -profile apptainer
 
-These run the workflow on data from `test/mini` and write outputs to
-directories `./results` and `./benchmark`, taking configuration from
-`./nextflow.config`.
+This runs the workflow on data from `test/mini` and writes outputs to
+directories `./results` and `./benchmarks`.  It takes these defaults
+from `main.nf` and `nextflow.config`.
+
+**Tip**
+To spare yourself from typing `-profile yourprofile` add the desired
+container runtime to the `standard` profile in `nextflow.config`.
 
 
 ## Usage
@@ -36,8 +39,17 @@ To run the workflow, specify the path to the sample sheet as input
 
     ./main.nf --input path/to/isolates.tsv
 
-You will also want to override the output directory (default `./results`)
+You may also want to override the output directory (default `./results`)
 
-    ./main.nf --input path/to/isolates.tsv --output path/to/resultdir
+    ./main.nf --input path/to/isolates.tsv --outdir path/to/resultdir
+
+A Slurm profile has been provided as well.  To run with this:
+
+    ./main.nf -profile slurm,apptainer
+
+Or, forgoing predefined profiles:
+
+    ./main.nf -process.executor slurm -with-apptainer
 
 To run with different config settings see [nextflow.config](nextflow.config).
+

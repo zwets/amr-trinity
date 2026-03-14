@@ -1,5 +1,12 @@
 #!/usr/bin/env nextflow
 
+// Default params, override with --input ..., --outdir ...
+params {
+    input = 'test/mini/isolates.tsv'
+    outdir = 'results'
+}
+
+// Include the modules with the Big Three
 include { amrfinderplus } from './modules/amrfinderplus.nf'
 include { resfinder } from './modules/resfinder.nf'
 include { rgi } from './modules/rgi.nf'
@@ -24,7 +31,7 @@ process summarise {
     """
 }
 
-// Harmonizes the per tool per sample output
+// Hamronize the per tool per sample output
 process hamronize {
     publishDir "${params.outdir}", mode: 'copy'
 
