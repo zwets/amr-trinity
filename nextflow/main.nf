@@ -50,14 +50,18 @@ process hamronize {
 
 workflow {
 
+    // Strip comments and empty lines from the input sample sheet to humour splitCsv with clean TSV input
+    samplesheet = Channel.fromPath(params.input).splitText().filter { s -> ! (s.strip() ==~ /^\s*(#.*)?$/) }
+        | collectFile(name: 'samplesheet.tsv', sort: false)
+
     // Parse the sample sheet into a channel of (id, species, assembly) tuples and connect to the tools in parallel
-    Channel.fromPath(params.input).splitCsv(header: true, sep: '\t')  // boycott CSV!
+    samplesheet.splitCsv(header: true, sep: '\t')  // boycott CSV!
         | map { row -> tuple(row.id, row.species, file(row.assembly)) }
         | (amrfinderplus & resfinder & rgi)
 
     // Pull the tool outputs into a single channel, harmonise each, collect all harmoniseds, and summarise overall
     Channel.of().mix(amrfinderplus.out, resfinder.out, rgi.out)
-        | hamronize 
+        | hamronize
         | collect // into array
         | summarise
 

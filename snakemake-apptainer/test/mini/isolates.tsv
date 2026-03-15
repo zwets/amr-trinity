@@ -2,11 +2,12 @@
 #
 # The first line (after comment and empty lines) must have column headings,
 # and must define at least the columns id, species and assembly.  Columns
-# can be in any order.
+# must be tab-separated and can be in any order.
 #
 # Every row must have a (possibly empty) value in every column.  The 'id'
-# column must have unique non-empty values.  The 'assembly' column must
-# have paths to FASTA files relative to the working directory.
+# column must have unique non-empty values.  The 'species' column may be
+# empty or have value 'Unknown'.  The 'assembly' column has the absolute
+# or relative (to the launch directory) paths of the FASTA files.
 
 id	species	assembly
 NDM	Unknown	test/mini/test_contig.fna

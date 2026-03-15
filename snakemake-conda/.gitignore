@@ -4,3 +4,5 @@
 /benchmarks
 /test/*
 !/test/mini
+/*.out
+/*.job
