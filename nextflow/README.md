@@ -6,7 +6,12 @@ profiles to run with Apptainer (Singularity), Podman or Docker.
 
 ## Installation
 
-Install Nextflow as documented on [their site](https://www.nextflow.io/docs/latest/getstarted.html)
+Install Nextflow as documented on
+[their site](https://www.nextflow.io/docs/latest/getstarted.html):
+
+    [ -d ~/bin ] || mkdir ~/bin && export PATH="$HOME/bin:$PATH"
+    wget -qO ~/bin/nextflow https://get.nextflow.io &&
+    chmod +x ~/bin/nextflow
 
 In the directory where you read this README.md, run smoke test
 

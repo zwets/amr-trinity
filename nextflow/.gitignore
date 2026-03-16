@@ -5,3 +5,5 @@
 /benchmarks
 /nxf.*
 /work
+/*.job
+/*.out
