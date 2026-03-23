@@ -12,10 +12,10 @@ A Dockerfile for hAMRonization is included in the
 > All tools now publish (mostly) up-to-date container releases with
 > database included.  The official releases are here:
 >
->  * AMRFinderPlus: <https://docker.io/ncbi/amr>
->  * ResFinder: <https://docker.io/genomicepidemiology/resfinder>
+>  * AMRFinderPlus: <https://hub.docker.com/r/ncbi/amr>
+>  * ResFinder: <https://hub.docker.com/r/genomicepidemiology/resfinder>
 >  * RGI: <https://quay.io/biocontainers/rgi>
->  * hAMRonization: <https://docker.io/finlaymaguire/hamronization> or <https://ghcr.io/zwets/hamronization>
+>  * hAMRonization: <https://hub.docker.com/r/finlaymaguire/hamronization> or <https://ghcr.io/zwets/hamronization>
 
 
 ## Build
