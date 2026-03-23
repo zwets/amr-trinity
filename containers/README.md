@@ -24,14 +24,14 @@ You can still build container images locally (adapt version numbers):
 
     podman build -t rgi:6.0.5 -f Dockerfile.rgi .
     podman build -t resfinder:4.7.2 -f Dockerfile.resfinder .
-    podman build -t amrfinderplus:4.0.23 -f Dockerfile.amrfinderplus .
+    podman build -t amrfinderplus:4.2.7 -f Dockerfile.amrfinderplus .
 
 
 ## Run
 
 Running the local images:
 
-    podman run --rm -v $PWD:/workdir localhost/amrfinderplus:4.0.23 \
+    podman run --rm -v $PWD:/workdir localhost/amrfinderplus:4.2.7 \
        amrfinder -n CONTIGS -o RESULTFILE [-O SPECIES] [--threads THREADS]
 
     podman run --rm -v $PWD:/workdir localhost/resfinder:4.7.2 

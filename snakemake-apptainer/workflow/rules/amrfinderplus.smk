@@ -12,7 +12,7 @@ rule run_amrfinderplus:
     benchmark:
         "benchmarks/amrfinderplus_{sample}.tsv"
     container:
-        "docker://docker.io/ncbi/amr:4.0.23-2025-07-16.1"
+        "docker://docker.io/ncbi/amr:4.2.7-2026-01-21.1"
     threads: 4
     resources: runtime = "2m", mem = "500MB"
     shell:
